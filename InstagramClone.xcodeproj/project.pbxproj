@@ -21,6 +21,10 @@
 		F4B6DE9E291D08D500A8FEA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4B6DE9D291D08D500A8FEA9 /* Assets.xcassets */; };
 		F4B6DEA0291D14DB00A8FEA9 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */; };
 		F4B6DEA4291D20F600A8FEA9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */; };
+		F4D05CC0291DE8EC000C1C97 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CBF291DE8EC000C1C97 /* LoginViewController.swift */; };
+		F4D05CC2291DE907000C1C97 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC1291DE907000C1C97 /* RegistrationViewController.swift */; };
+		F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */; };
+		F4D05CC6291E0970000C1C97 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC5291E0970000C1C97 /* AuthenticationViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +44,10 @@
 		F4B6DE9D291D08D500A8FEA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../Assets.xcassets; sourceTree = "<group>"; };
 		F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		F4D05CBF291DE8EC000C1C97 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		F4D05CC1291DE907000C1C97 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
+		F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
+		F4D05CC5291E0970000C1C97 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +115,7 @@
 		F4B6DE8A291D003E00A8FEA9 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				F4B6DEA5291DE8B500A8FEA9 /* Auth */,
 				F4B6DE91291D02CC00A8FEA9 /* MainTabViewController.swift */,
 				F4B6DE93291D04EE00A8FEA9 /* FeedViewController.swift */,
 				F4B6DE95291D04FD00A8FEA9 /* SearchViewController.swift */,
@@ -120,6 +129,7 @@
 		F4B6DE8E291D005000A8FEA9 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				F4D05CC5291E0970000C1C97 /* AuthenticationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -128,6 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */,
+				F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -137,6 +148,15 @@
 			children = (
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		F4B6DEA5291DE8B500A8FEA9 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				F4D05CBF291DE8EC000C1C97 /* LoginViewController.swift */,
+				F4D05CC1291DE907000C1C97 /* RegistrationViewController.swift */,
+			);
+			path = Auth;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,9 +230,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */,
+				F4D05CC0291DE8EC000C1C97 /* LoginViewController.swift in Sources */,
 				F4B6DE96291D04FD00A8FEA9 /* SearchViewController.swift in Sources */,
 				F4B6DEA0291D14DB00A8FEA9 /* FeedCell.swift in Sources */,
 				F4B6DE79291CFFFD00A8FEA9 /* ViewController.swift in Sources */,
+				F4D05CC2291DE907000C1C97 /* RegistrationViewController.swift in Sources */,
+				F4D05CC6291E0970000C1C97 /* AuthenticationViewModel.swift in Sources */,
 				F4B6DE9A291D053E00A8FEA9 /* NotificationVIewContorller.swift in Sources */,
 				F4B6DE75291CFFFD00A8FEA9 /* AppDelegate.swift in Sources */,
 				F4B6DE94291D04EE00A8FEA9 /* FeedViewController.swift in Sources */,
