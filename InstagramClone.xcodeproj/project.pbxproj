@@ -29,6 +29,11 @@
 		F4D05CC8291F3D00000C1C97 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4D05CC7291F3D00000C1C97 /* GoogleService-Info.plist */; };
 		F4D05CCA291F45A0000C1C97 /* ImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC9291F45A0000C1C97 /* ImageUploader.swift */; };
 		F4D05CCC291F45A7000C1C97 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CCB291F45A7000C1C97 /* AuthService.swift */; };
+		F4D05CCE291F6696000C1C97 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CCD291F6696000C1C97 /* ProfileCell.swift */; };
+		F4D05CD1291F66B4000C1C97 /* ProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD0291F66B4000C1C97 /* ProfileHeader.swift */; };
+		F4D05CD3291FBE65000C1C97 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD2291FBE65000C1C97 /* UserService.swift */; };
+		F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD4291FBEB2000C1C97 /* Constants.swift */; };
+		F4D05CD7291FC10A000C1C97 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD6291FC10A000C1C97 /* User.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +63,11 @@
 		F4D05CC7291F3D00000C1C97 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F4D05CC9291F45A0000C1C97 /* ImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploader.swift; sourceTree = "<group>"; };
 		F4D05CCB291F45A7000C1C97 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		F4D05CCD291F6696000C1C97 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		F4D05CD0291F66B4000C1C97 /* ProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeader.swift; sourceTree = "<group>"; };
+		F4D05CD2291FBE65000C1C97 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
+		F4D05CD4291FBEB2000C1C97 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		F4D05CD6291FC10A000C1C97 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */,
+				F4D05CD4291FBEB2000C1C97 /* Constants.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -141,6 +152,7 @@
 			children = (
 				F4D05CC9291F45A0000C1C97 /* ImageUploader.swift */,
 				F4D05CCB291F45A7000C1C97 /* AuthService.swift */,
+				F4D05CD2291FBE65000C1C97 /* UserService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -170,6 +182,7 @@
 		F4B6DE8F291D005200A8FEA9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F4D05CCF291F669F000C1C97 /* Profile */,
 				F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */,
 				F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */,
 			);
@@ -179,6 +192,7 @@
 		F4B6DE90291D005600A8FEA9 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				F4D05CD6291FC10A000C1C97 /* User.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -190,6 +204,15 @@
 				F4D05CC1291DE907000C1C97 /* RegistrationViewController.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		F4D05CCF291F669F000C1C97 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				F4D05CCD291F6696000C1C97 /* ProfileCell.swift */,
+				F4D05CD0291F66B4000C1C97 /* ProfileHeader.swift */,
+			);
+			path = Profile;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -309,6 +332,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */,
+				F4D05CD1291F66B4000C1C97 /* ProfileHeader.swift in Sources */,
 				F4D05CC0291DE8EC000C1C97 /* LoginViewController.swift in Sources */,
 				F4B6DE96291D04FD00A8FEA9 /* SearchViewController.swift in Sources */,
 				F4B6DEA0291D14DB00A8FEA9 /* FeedCell.swift in Sources */,
@@ -317,12 +341,16 @@
 				F4D05CC6291E0970000C1C97 /* AuthenticationViewModel.swift in Sources */,
 				F4B6DE9A291D053E00A8FEA9 /* NotificationVIewContorller.swift in Sources */,
 				F4B6DE75291CFFFD00A8FEA9 /* AppDelegate.swift in Sources */,
+				F4D05CD7291FC10A000C1C97 /* User.swift in Sources */,
 				F4B6DE94291D04EE00A8FEA9 /* FeedViewController.swift in Sources */,
+				F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */,
 				F4B6DE98291D053000A8FEA9 /* ImageSelectorViewController.swift in Sources */,
 				F4B6DE9C291D054800A8FEA9 /* ProfileViewController.swift in Sources */,
 				F4B6DE92291D02CC00A8FEA9 /* MainTabViewController.swift in Sources */,
 				F4D05CCA291F45A0000C1C97 /* ImageUploader.swift in Sources */,
 				F4D05CCC291F45A7000C1C97 /* AuthService.swift in Sources */,
+				F4D05CD3291FBE65000C1C97 /* UserService.swift in Sources */,
+				F4D05CCE291F6696000C1C97 /* ProfileCell.swift in Sources */,
 				F4B6DEA4291D20F600A8FEA9 /* Extensions.swift in Sources */,
 				F4B6DE77291CFFFD00A8FEA9 /* SceneDelegate.swift in Sources */,
 			);
