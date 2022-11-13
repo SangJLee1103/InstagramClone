@@ -34,6 +34,9 @@
 		F4D05CD3291FBE65000C1C97 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD2291FBE65000C1C97 /* UserService.swift */; };
 		F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD4291FBEB2000C1C97 /* Constants.swift */; };
 		F4D05CD7291FC10A000C1C97 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD6291FC10A000C1C97 /* User.swift */; };
+		F4D05CD92920C4EB000C1C97 /* ProfileHeaderViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD82920C4EB000C1C97 /* ProfileHeaderViewModel.swift */; };
+		F4D05CDB2920E098000C1C97 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CDA2920E098000C1C97 /* UserCell.swift */; };
+		F4D05CDD2920F268000C1C97 /* UserCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +71,9 @@
 		F4D05CD2291FBE65000C1C97 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		F4D05CD4291FBEB2000C1C97 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F4D05CD6291FC10A000C1C97 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		F4D05CD82920C4EB000C1C97 /* ProfileHeaderViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderViewModel.swift; sourceTree = "<group>"; };
+		F4D05CDA2920E098000C1C97 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +181,8 @@
 			isa = PBXGroup;
 			children = (
 				F4D05CC5291E0970000C1C97 /* AuthenticationViewModel.swift */,
+				F4D05CD82920C4EB000C1C97 /* ProfileHeaderViewModel.swift */,
+				F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -185,6 +193,7 @@
 				F4D05CCF291F669F000C1C97 /* Profile */,
 				F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */,
 				F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */,
+				F4D05CDA2920E098000C1C97 /* UserCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -339,12 +348,15 @@
 				F4B6DE79291CFFFD00A8FEA9 /* ViewController.swift in Sources */,
 				F4D05CC2291DE907000C1C97 /* RegistrationViewController.swift in Sources */,
 				F4D05CC6291E0970000C1C97 /* AuthenticationViewModel.swift in Sources */,
+				F4D05CDB2920E098000C1C97 /* UserCell.swift in Sources */,
 				F4B6DE9A291D053E00A8FEA9 /* NotificationVIewContorller.swift in Sources */,
 				F4B6DE75291CFFFD00A8FEA9 /* AppDelegate.swift in Sources */,
 				F4D05CD7291FC10A000C1C97 /* User.swift in Sources */,
 				F4B6DE94291D04EE00A8FEA9 /* FeedViewController.swift in Sources */,
+				F4D05CD92920C4EB000C1C97 /* ProfileHeaderViewModel.swift in Sources */,
 				F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */,
 				F4B6DE98291D053000A8FEA9 /* ImageSelectorViewController.swift in Sources */,
+				F4D05CDD2920F268000C1C97 /* UserCellViewModel.swift in Sources */,
 				F4B6DE9C291D054800A8FEA9 /* ProfileViewController.swift in Sources */,
 				F4B6DE92291D02CC00A8FEA9 /* MainTabViewController.swift in Sources */,
 				F4D05CCA291F45A0000C1C97 /* ImageUploader.swift in Sources */,

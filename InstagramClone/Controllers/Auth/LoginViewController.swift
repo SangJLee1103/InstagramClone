@@ -7,9 +7,14 @@
 
 import UIKit
 
+protocol AuthenticationDelegate: class {
+    func authenticationComplete()
+}
+
 class LoginViewController: UIViewController {
     
     private var viewModel = LoginViewModel()
+    weak var delegate: AuthenticationDelegate?
     
     private let iconImage: UIImageView = {
         let iv = UIImageView(image: UIImage(named: "Instagram_logo_white"))
@@ -69,14 +74,14 @@ class LoginViewController: UIViewController {
                 print(error.localizedDescription)
                 return
             }
-            
-            self.dismiss(animated: true, completion: nil)
+            self.delegate?.authenticationComplete()
         }
     }
     
     // MARK: - 액션
     @objc func handleShowSignUp() {
         let controller = RegistrationViewController()
+        controller.delegate = delegate
         self.navigationController?.pushViewController(controller, animated: true)
     }
     

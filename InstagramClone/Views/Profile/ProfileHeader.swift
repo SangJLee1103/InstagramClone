@@ -6,21 +6,25 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ProfileHeader: UICollectionReusableView {
+    
+    var viewModel: ProfileHeaderViewModel? {
+        didSet { configure() }
+    }
     
     // MARK: - Properties
     private let profileImageView: UIImageView = {
         let iv = UIImageView()
-        iv.image = #imageLiteral(resourceName: "venom-7")
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.backgroundColor = .lightGray
         return iv
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Son"
         label.font = .boldSystemFont(ofSize: 14)
         return label
     }()
@@ -132,6 +136,12 @@ class ProfileHeader: UICollectionReusableView {
     // MARK: - 액션
     @objc func handleEditProfileFollowTapped() {
         print("눌림")
+    }
+    
+    func configure() {
+        guard let viewModel = viewModel else { return }
+        nameLabel.text = viewModel.fullname
+        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
     }
     
     func attributedStatText(value: Int, label: String) -> NSAttributedString {
