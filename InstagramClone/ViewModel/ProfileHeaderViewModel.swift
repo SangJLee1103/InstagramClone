@@ -21,8 +21,5 @@ struct ProfileHeaderViewModel {
     init(user: User) {
         self.user = user
     }
-    
-    
-    
 }
 

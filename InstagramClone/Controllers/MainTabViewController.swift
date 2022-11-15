@@ -10,6 +10,8 @@ import Firebase
 
 class MainTabViewController: UITabBarController {
     
+    
+    
     // MARK: - Lifecycle
     private var user: User? {
         didSet {
