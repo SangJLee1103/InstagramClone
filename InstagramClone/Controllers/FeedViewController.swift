@@ -12,9 +12,12 @@ private let reuseIdentifier = "Cell"
 
 class FeedViewController: UICollectionViewController {
     
+    private var posts = [Post]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
+        fetchPosts()
     }
     
     // MARK: - 액션
@@ -31,6 +34,14 @@ class FeedViewController: UICollectionViewController {
         }
     }
     
+    func fetchPosts() {
+        PostService.fetchPosts { posts in
+            self.posts = posts
+            self.collectionView.reloadData()
+        }
+    }
+    
+    
     func configureUI() {
         collectionView.backgroundColor = .white
         
@@ -44,11 +55,12 @@ class FeedViewController: UICollectionViewController {
 //MARK: 컬렉션 뷰 데이터 소스
 extension FeedViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
+        cell.viewModel = PostViewModel(post: posts[indexPath.row])
         return cell
     }
 }
