@@ -14,6 +14,7 @@ private let headerIdentifier = "ProfileHeader"
 class ProfileViewController: UICollectionViewController {
     
     private var user: User
+    private var posts = [Post]()
     
     // 의존성 주입
     init(user: User) {
@@ -30,6 +31,7 @@ class ProfileViewController: UICollectionViewController {
         configureCollectionView()
         checkIfUserIsFollowed()
         fetchUserStats()
+        fetchPosts()
     }
     
     func checkIfUserIsFollowed() {
@@ -42,6 +44,13 @@ class ProfileViewController: UICollectionViewController {
     func fetchUserStats() {
         UserService.fetchUserStats(uid: user.uid) { stats in
             self.user.stats = stats
+            self.collectionView.reloadData()
+        }
+    }
+    
+    func fetchPosts() {
+        PostService.fetchPosts(forUser: user.uid) { posts in
+            self.posts = posts
             self.collectionView.reloadData()
         }
     }
@@ -60,7 +69,7 @@ class ProfileViewController: UICollectionViewController {
 // MARK: 컬렉션뷰 데이터 소스
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 9
+        return posts.count
     }
 }
 
@@ -68,16 +77,25 @@ extension ProfileViewController {
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ProfileCell
+        cell.viewModel = PostViewModel(post: posts[indexPath.row])
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! ProfileHeader
         header.delegate = self
-        
         header.viewModel = ProfileHeaderViewModel(user: user)
         
         return header
+    }
+}
+
+// MARK: - UICollectionViewDelegate
+extension ProfileViewController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
+        controller.post = posts[indexPath.row]
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 
