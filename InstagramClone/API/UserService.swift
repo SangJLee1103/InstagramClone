@@ -10,8 +10,9 @@ import Firebase
 typealias FirestoreCompletion = (Error?) -> Void
 
 struct UserService {
+    
+    // 유저 정보 가져오기
     static func fetchUser(withUid uid: String, completion: @escaping(User) -> Void ) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
         COLLECTION_USERS.document(uid).getDocument { snapshot, error in
             guard let dictionary = snapshot?.data() else { return }
             let user = User(dictionary: dictionary)
@@ -19,6 +20,7 @@ struct UserService {
         }
     }
     
+    // 전체 유저 정보 가져오기
     static func fetchUsers(completion: @escaping([User]) -> Void) {
         COLLECTION_USERS.getDocuments { snapshot, error in
             guard let snapshot = snapshot else { return }
@@ -27,6 +29,7 @@ struct UserService {
         }
     }
     
+    // 팔로우
     static func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).setData([:]) { error in
@@ -34,6 +37,7 @@ struct UserService {
         }
     }
     
+    // 언팔로우
     static func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         
@@ -42,6 +46,7 @@ struct UserService {
         }
     }
     
+    // 유저를 팔로우 했는지 안했는지 체크하는 함수
     static func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         
@@ -51,6 +56,7 @@ struct UserService {
         }
     }
     
+    // 유저의 팔로우, 팔로잉, 포스팅 정보 가져오기
     static func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {
         COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, error in
             let followers = snapshot?.documents.count ?? 0
