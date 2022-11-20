@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		0C4F477389ED5D773C29236E /* Pods_InstagramClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88249C02BC4A16F7E24C08B0 /* Pods_InstagramClone.framework */; };
+		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
+		F405C5292929E4AB00100735 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5282929E4AB00100735 /* Notification.swift */; };
+		F405C52B2929E79100100735 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C52A2929E79100100735 /* NotificationService.swift */; };
+		F405C52D2929F7F800100735 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C52C2929F7F800100735 /* NotificationViewModel.swift */; };
 		F429E6D029239A0D0003103C /* UploadPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429E6CF29239A0D0003103C /* UploadPostViewController.swift */; };
 		F4409CE72924F182006923B3 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4409CE62924F182006923B3 /* PostViewModel.swift */; };
 		F460225A29266D5D000DE2D5 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F460225929266D5D000DE2D5 /* CommentViewController.swift */; };
@@ -54,6 +58,10 @@
 		88249C02BC4A16F7E24C08B0 /* Pods_InstagramClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InstagramClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AF635FECA680D0596C02A26 /* Pods-InstagramClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.release.xcconfig"; path = "Target Support Files/Pods-InstagramClone/Pods-InstagramClone.release.xcconfig"; sourceTree = "<group>"; };
 		C2BD051AFDB6D8E90D49FFBC /* Pods-InstagramClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.debug.xcconfig"; path = "Target Support Files/Pods-InstagramClone/Pods-InstagramClone.debug.xcconfig"; sourceTree = "<group>"; };
+		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		F405C5282929E4AB00100735 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		F405C52A2929E79100100735 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		F405C52C2929F7F800100735 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		F429E6CF29239A0D0003103C /* UploadPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostViewController.swift; sourceTree = "<group>"; };
 		F4409CE62924F182006923B3 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		F460225929266D5D000DE2D5 /* CommentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
@@ -184,6 +192,7 @@
 				F4D05CD2291FBE65000C1C97 /* UserService.swift */,
 				F4E9F2322924DCBF00322206 /* PostService.swift */,
 				F460225F292753A0000DE2D5 /* CommentService.swift */,
+				F405C52A2929E79100100735 /* NotificationService.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -212,6 +221,7 @@
 				F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */,
 				F4409CE62924F182006923B3 /* PostViewModel.swift */,
 				F460226329275A37000DE2D5 /* CommentViewModel.swift */,
+				F405C52C2929F7F800100735 /* NotificationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -225,6 +235,7 @@
 				F4D05CDA2920E098000C1C97 /* UserCell.swift */,
 				F460225B29266EC5000DE2D5 /* CommentCell.swift */,
 				F460225D292727CE000DE2D5 /* CommentInputAccesoryView.swift */,
+				F405C5262929DEE500100735 /* NotificationCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -235,6 +246,7 @@
 				F4D05CD6291FC10A000C1C97 /* User.swift */,
 				F4E9F2342924EE5900322206 /* Post.swift */,
 				F460226129275773000DE2D5 /* Comment.swift */,
+				F405C5282929E4AB00100735 /* Notification.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -374,6 +386,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F460226429275A37000DE2D5 /* CommentViewModel.swift in Sources */,
+				F405C52D2929F7F800100735 /* NotificationViewModel.swift in Sources */,
 				F4409CE72924F182006923B3 /* PostViewModel.swift in Sources */,
 				F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */,
 				F4D05CD1291F66B4000C1C97 /* ProfileHeader.swift in Sources */,
@@ -385,6 +398,7 @@
 				F4D05CC2291DE907000C1C97 /* RegistrationViewController.swift in Sources */,
 				F4602260292753A0000DE2D5 /* CommentService.swift in Sources */,
 				F460226229275773000DE2D5 /* Comment.swift in Sources */,
+				F405C5292929E4AB00100735 /* Notification.swift in Sources */,
 				F4D05CC6291E0970000C1C97 /* AuthenticationViewModel.swift in Sources */,
 				F4D05CDB2920E098000C1C97 /* UserCell.swift in Sources */,
 				F4B6DE9A291D053E00A8FEA9 /* NotificationVIewContorller.swift in Sources */,
@@ -400,6 +414,7 @@
 				F4B6DE92291D02CC00A8FEA9 /* MainTabViewController.swift in Sources */,
 				F460225A29266D5D000DE2D5 /* CommentViewController.swift in Sources */,
 				F4D05CCA291F45A0000C1C97 /* ImageUploader.swift in Sources */,
+				F405C52B2929E79100100735 /* NotificationService.swift in Sources */,
 				F4E9F2352924EE5900322206 /* Post.swift in Sources */,
 				F4D05CCC291F45A7000C1C97 /* AuthService.swift in Sources */,
 				F460225E292727CE000DE2D5 /* CommentInputAccesoryView.swift in Sources */,
@@ -407,6 +422,7 @@
 				F4D05CD3291FBE65000C1C97 /* UserService.swift in Sources */,
 				F4D05CCE291F6696000C1C97 /* ProfileCell.swift in Sources */,
 				F4B6DEA4291D20F600A8FEA9 /* Extensions.swift in Sources */,
+				F405C5272929DEE500100735 /* NotificationCell.swift in Sources */,
 				F4B6DE77291CFFFD00A8FEA9 /* SceneDelegate.swift in Sources */,
 				F460225C29266EC5000DE2D5 /* CommentCell.swift in Sources */,
 			);
