@@ -14,9 +14,9 @@ enum NotificationType: Int {
     
     var notificationMessage: String {
         switch self {
-        case .like: return " 님이 회원님의 게시물을 좋아합니다."
-        case .follow: return " 님이 회원님을 팔로우하기 시작했습니다."
-        case .comment: return " 님이 회원님의 게시물에 댓글을 달았습니다."
+        case .like: return "님이 회원님의 게시물을 좋아합니다."
+        case .follow: return "님이 회원님을 팔로우하기 시작했습니다."
+        case .comment: return "님이 회원님의 게시물에 댓글을 달았습니다."
         }
     }
 }
@@ -30,6 +30,7 @@ struct Notification {
     let id: String
     let userProfileImageUrl: String
     let username: String
+    var userIsFollwed = false
     
     init(dictionary: [String: Any]) {
         self.timestamp = dictionary["timestamp"] as? Timestamp ?? Timestamp(date: Date())
