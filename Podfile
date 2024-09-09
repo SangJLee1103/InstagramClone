@@ -16,4 +16,17 @@ target 'InstagramClone' do
 	pod 'SDWebImage', '~>4.4.2'
 	pod 'JGProgressHUD', '~>2.0.3'
 	pod 'YPImagePicker'
+	pod 'RxSwift'
+	pod 'RxCocoa'
+	pod 'ReactorKit'
+end
+
+post_install do |installer|
+    installer.generated_projects.each do |project|
+        project.targets.each do |target|
+            target.build_configurations.each do |config|
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+            end
+        end
+    end
 end

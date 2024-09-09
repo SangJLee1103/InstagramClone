@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		0C4F477389ED5D773C29236E /* Pods_InstagramClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88249C02BC4A16F7E24C08B0 /* Pods_InstagramClone.framework */; };
+		DE341B252C8F1CCA00189845 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */; };
+		DE341B272C8F1E4800189845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE341B262C8F1E4800189845 /* Assets.xcassets */; };
 		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
 		F405C5292929E4AB00100735 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5282929E4AB00100735 /* Notification.swift */; };
 		F405C52B2929E79100100735 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C52A2929E79100100735 /* NotificationService.swift */; };
@@ -32,14 +34,12 @@
 		F4B6DE98291D053000A8FEA9 /* ImageSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DE97291D053000A8FEA9 /* ImageSelectorViewController.swift */; };
 		F4B6DE9A291D053E00A8FEA9 /* NotificationVIewContorller.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DE99291D053E00A8FEA9 /* NotificationVIewContorller.swift */; };
 		F4B6DE9C291D054800A8FEA9 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DE9B291D054800A8FEA9 /* ProfileViewController.swift */; };
-		F4B6DE9E291D08D500A8FEA9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4B6DE9D291D08D500A8FEA9 /* Assets.xcassets */; };
 		F4B6DEA0291D14DB00A8FEA9 /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */; };
 		F4B6DEA4291D20F600A8FEA9 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */; };
 		F4D05CC0291DE8EC000C1C97 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CBF291DE8EC000C1C97 /* LoginViewController.swift */; };
 		F4D05CC2291DE907000C1C97 /* RegistrationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC1291DE907000C1C97 /* RegistrationViewController.swift */; };
 		F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */; };
 		F4D05CC6291E0970000C1C97 /* AuthenticationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC5291E0970000C1C97 /* AuthenticationViewModel.swift */; };
-		F4D05CC8291F3D00000C1C97 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4D05CC7291F3D00000C1C97 /* GoogleService-Info.plist */; };
 		F4D05CCA291F45A0000C1C97 /* ImageUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CC9291F45A0000C1C97 /* ImageUploader.swift */; };
 		F4D05CCC291F45A7000C1C97 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CCB291F45A7000C1C97 /* AuthService.swift */; };
 		F4D05CCE291F6696000C1C97 /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CCD291F6696000C1C97 /* ProfileCell.swift */; };
@@ -58,6 +58,8 @@
 		88249C02BC4A16F7E24C08B0 /* Pods_InstagramClone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_InstagramClone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AF635FECA680D0596C02A26 /* Pods-InstagramClone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.release.xcconfig"; path = "Target Support Files/Pods-InstagramClone/Pods-InstagramClone.release.xcconfig"; sourceTree = "<group>"; };
 		C2BD051AFDB6D8E90D49FFBC /* Pods-InstagramClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.debug.xcconfig"; path = "Target Support Files/Pods-InstagramClone/Pods-InstagramClone.debug.xcconfig"; sourceTree = "<group>"; };
+		DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		DE341B262C8F1E4800189845 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		F405C5282929E4AB00100735 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		F405C52A2929E79100100735 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -84,14 +86,12 @@
 		F4B6DE97291D053000A8FEA9 /* ImageSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSelectorViewController.swift; sourceTree = "<group>"; };
 		F4B6DE99291D053E00A8FEA9 /* NotificationVIewContorller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationVIewContorller.swift; sourceTree = "<group>"; };
 		F4B6DE9B291D054800A8FEA9 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		F4B6DE9D291D08D500A8FEA9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = ../../Assets.xcassets; sourceTree = "<group>"; };
 		F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F4D05CBF291DE8EC000C1C97 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		F4D05CC1291DE907000C1C97 /* RegistrationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewController.swift; sourceTree = "<group>"; };
 		F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTextField.swift; sourceTree = "<group>"; };
 		F4D05CC5291E0970000C1C97 /* AuthenticationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationViewModel.swift; sourceTree = "<group>"; };
-		F4D05CC7291F3D00000C1C97 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F4D05CC9291F45A0000C1C97 /* ImageUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageUploader.swift; sourceTree = "<group>"; };
 		F4D05CCB291F45A7000C1C97 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		F4D05CCD291F6696000C1C97 /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
@@ -167,9 +167,9 @@
 				F4B6DE78291CFFFD00A8FEA9 /* ViewController.swift */,
 				F4B6DE7A291CFFFD00A8FEA9 /* Main.storyboard */,
 				F4B6DE7F291CFFFF00A8FEA9 /* LaunchScreen.storyboard */,
+				DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */,
 				F4B6DE82291CFFFF00A8FEA9 /* Info.plist */,
-				F4D05CC7291F3D00000C1C97 /* GoogleService-Info.plist */,
-				F4B6DE9D291D08D500A8FEA9 /* Assets.xcassets */,
+				DE341B262C8F1E4800189845 /* Assets.xcassets */,
 			);
 			path = InstagramClone;
 			sourceTree = "<group>";
@@ -330,8 +330,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4B6DE81291CFFFF00A8FEA9 /* LaunchScreen.storyboard in Resources */,
-				F4D05CC8291F3D00000C1C97 /* GoogleService-Info.plist in Resources */,
-				F4B6DE9E291D08D500A8FEA9 /* Assets.xcassets in Resources */,
+				DE341B252C8F1CCA00189845 /* GoogleService-Info.plist in Resources */,
+				DE341B272C8F1E4800189845 /* Assets.xcassets in Resources */,
 				F4B6DE7C291CFFFD00A8FEA9 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -500,7 +500,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -554,7 +554,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
