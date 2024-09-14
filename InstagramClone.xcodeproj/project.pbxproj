@@ -10,6 +10,7 @@
 		0C4F477389ED5D773C29236E /* Pods_InstagramClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88249C02BC4A16F7E24C08B0 /* Pods_InstagramClone.framework */; };
 		DE341B252C8F1CCA00189845 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */; };
 		DE341B272C8F1E4800189845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE341B262C8F1E4800189845 /* Assets.xcassets */; };
+		DEC75D282C95717400C122C3 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75D272C95717400C122C3 /* AuthError.swift */; };
 		DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4BC682C944E7400025C18 /* RegistrationReactor.swift */; };
 		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
 		F405C5292929E4AB00100735 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5282929E4AB00100735 /* Notification.swift */; };
@@ -61,6 +62,7 @@
 		C2BD051AFDB6D8E90D49FFBC /* Pods-InstagramClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.debug.xcconfig"; path = "Target Support Files/Pods-InstagramClone/Pods-InstagramClone.debug.xcconfig"; sourceTree = "<group>"; };
 		DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE341B262C8F1E4800189845 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DEC75D272C95717400C122C3 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
 		DED4BC682C944E7400025C18 /* RegistrationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationReactor.swift; sourceTree = "<group>"; };
 		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		F405C5282929E4AB00100735 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */,
 				F4D05CD4291FBEB2000C1C97 /* Constants.swift */,
 				F479D99329244B5C0059BA8B /* InputTextView.swift */,
+				DEC75D272C95717400C122C3 /* AuthError.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -410,6 +413,7 @@
 				F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */,
 				F4D05CD1291F66B4000C1C97 /* ProfileHeader.swift in Sources */,
 				F429E6D029239A0D0003103C /* UploadPostViewController.swift in Sources */,
+				DEC75D282C95717400C122C3 /* AuthError.swift in Sources */,
 				F4D05CC0291DE8EC000C1C97 /* LoginViewController.swift in Sources */,
 				F4B6DE96291D04FD00A8FEA9 /* SearchViewController.swift in Sources */,
 				F4B6DEA0291D14DB00A8FEA9 /* FeedCell.swift in Sources */,

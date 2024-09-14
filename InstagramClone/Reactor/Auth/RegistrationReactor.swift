@@ -17,6 +17,7 @@ final class RegistrationReactor: Reactor {
         case usernameChanged(String)
         case profileImageSelected(UIImage)
         case signUp
+        case setError(String?)
     }
     
     enum Mutation {
@@ -50,33 +51,30 @@ final class RegistrationReactor: Reactor {
                 Observable.just(.setEmail(email)),
                 validateForm()
             ])
-            
         case .passwordChange(let password):
             return Observable.concat([
                 Observable.just(.setPassword(password)),
                 validateForm()
             ])
-            
         case .fullnameChanged(let fullname):
             return Observable.concat([
                 Observable.just(.setFullname(fullname)),
                 validateForm()
             ])
-            
         case .usernameChanged(let username):
             return Observable.concat([
                 Observable.just(.setUsername(username)),
                 validateForm()
             ])
-            
         case .profileImageSelected(let profileImage):
             return Observable.concat([
                 Observable.just(.setProfileImage(profileImage)),
                 validateForm()
             ])
-            
         case .signUp:
             return registerUser()
+        case .setError(let errorMessage):
+            return Observable.just(Mutation.setError(errorMessage))
         }
     }
     
@@ -108,7 +106,6 @@ final class RegistrationReactor: Reactor {
         case .setError(let errorMessage):
             newstate.errorMessage = errorMessage
         case .signupCompleted:
-            print("Signup completed mutation received")
             newstate.isSignupCompleted = true
         }
         
@@ -128,13 +125,14 @@ final class RegistrationReactor: Reactor {
         let credentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
         
         return AuthService.registerUser(withCredential: credentials)
-            .flatMap { _ -> Observable<Mutation> in
-                print("User registered successfully")
-                return Observable.just(.signupCompleted)
+            .map { _ in
+                return Mutation.signupCompleted
             }
             .catch { error in
-                print("Error registering user: \(error.localizedDescription)")
-                return Observable.just(Mutation.setError(error.localizedDescription))
+                let authError = AuthError.from(error)
+                let errorMessage = authError.errorMessage
+                print("DEBUG: Error registering user: \(error.localizedDescription)")
+                return Observable.just(Mutation.setError(errorMessage))
             }
     }
 }

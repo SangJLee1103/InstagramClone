@@ -45,6 +45,7 @@ struct AuthService {
                         if let error = error {
                             observer.onError(error)
                         } else {
+                            observer.onNext(())
                             observer.onCompleted()
                         }
                     }

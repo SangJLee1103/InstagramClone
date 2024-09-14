@@ -14,7 +14,6 @@ final class RegistrationViewController: UIViewController {
     private let reactor = RegistrationReactor()
     private let disposeBag = DisposeBag()
     
-    private var viewModel = RegistrationViewModel()
     weak var delegate: AuthenticationDelegate?
     
     private let plusPhotoButton: UIButton = {
@@ -37,8 +36,8 @@ final class RegistrationViewController: UIViewController {
         return tf
     }()
     
-    private let fullnameTextField =  CustomTextField(placeholder: "이름")
-    private let usernameTextField =  CustomTextField(placeholder: "성")
+    private let fullnameTextField = CustomTextField(placeholder: "이름")
+    private let usernameTextField = CustomTextField(placeholder: "성")
     
     private let signUpButton: UIButton = {
         let button = UIButton(type: .system)
@@ -62,43 +61,11 @@ final class RegistrationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        configureNotificationObserver()
-        
         bind(reactor: reactor)
     }
     
-//    @objc func handleSignUp() {
-//        guard let email = emailTextField.text else { return }
-//        guard let password = passwordTextField.text else { return }
-//        guard let fullname = fullnameTextField.text else { return }
-//        guard let username = usernameTextField.text?.lowercased() else { return }
-//        guard let profileImage = self.profileImage else { return }
-//        
-//        let credentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
-//        AuthService.registerUser(withCredential: credentials) { error in
-//            if let error = error {
-//                print(error.localizedDescription)
-//                return
-//            }
-//            
-//            self.delegate?.authenticationComplete()
-//        }
-//    }
-    
     @objc func handleShowLogin() {
         navigationController?.popViewController(animated: true)
-    }
-    
-    @objc func textDidChange(sender: UITextField) {
-        if sender == emailTextField {
-            viewModel.email = sender.text
-        } else if sender == passwordTextField {
-            viewModel.password = sender.text
-        } else if sender == fullnameTextField {
-            viewModel.fullname = sender.text
-        } else {
-            viewModel.username = sender.text
-        }
     }
     
     @objc func handleProfilePhotoSelect() {
@@ -130,28 +97,31 @@ final class RegistrationViewController: UIViewController {
     }
     
     private func bind(reactor: RegistrationReactor) {
-        
         /// input
         emailTextField.rx.text
             .orEmpty
+            .distinctUntilChanged()
             .map { RegistrationReactor.Action.emailChanged($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         passwordTextField.rx.text
             .orEmpty
+            .distinctUntilChanged()
             .map { RegistrationReactor.Action.passwordChange($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         fullnameTextField.rx.text
             .orEmpty
+            .distinctUntilChanged()
             .map { RegistrationReactor.Action.fullnameChanged($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         usernameTextField.rx.text
             .orEmpty
+            .distinctUntilChanged()
             .map { RegistrationReactor.Action.usernameChanged($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -166,14 +136,14 @@ final class RegistrationViewController: UIViewController {
             .map { $0.profileImage }
             .distinctUntilChanged()
             .observe(on: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] image in
-                guard let self = self, let image = image else { return }
-                
-                self.plusPhotoButton.layer.cornerRadius = self.plusPhotoButton.frame.width / 2
-                self.plusPhotoButton.layer.masksToBounds = true
-                self.plusPhotoButton.layer.borderColor = UIColor.white.cgColor
-                self.plusPhotoButton.layer.borderWidth = 2
-                self.plusPhotoButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
+            .withUnretained(self) // 순환 참조 피하기
+            .subscribe(onNext: { owner, image in
+                guard let image = image else { return }
+                owner.plusPhotoButton.layer.cornerRadius = owner.plusPhotoButton.frame.width / 2
+                owner.plusPhotoButton.layer.masksToBounds = true
+                owner.plusPhotoButton.layer.borderColor = UIColor.white.cgColor
+                owner.plusPhotoButton.layer.borderWidth = 2
+                owner.plusPhotoButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
             })
             .disposed(by: disposeBag)
         
@@ -190,22 +160,34 @@ final class RegistrationViewController: UIViewController {
         reactor.state
             .map { $0.isSignupCompleted }
             .filter { $0 }
-            .subscribe(onNext: { [weak self] _ in
-                print("Authentication completed")
-                self?.delegate?.authenticationComplete()
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.delegate?.authenticationComplete()
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.errorMessage }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, errorMessage in
+                owner.showErrorAlert(message: errorMessage)
+                
+                /// ReactorKit의 상태관리 방식: 같은 에러가 다시 발생해도 State의 값이 변경되지 않으면 UI에 변화가 반영되지 않음
+                owner.reactor.action.onNext(.setError(nil))
             })
             .disposed(by: disposeBag)
     }
     
-    private func configureNotificationObserver() {
-        emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        fullnameTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        usernameTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
+    private func showErrorAlert(message: String) {
+        let alert = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }
 
-// MARK: -
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[.editedImage] as? UIImage else { return }
