@@ -11,8 +11,6 @@ import YPImagePicker
 
 class MainTabViewController: UITabBarController {
     
-    
-    
     // MARK: - Lifecycle
     var user: User? {
         didSet {

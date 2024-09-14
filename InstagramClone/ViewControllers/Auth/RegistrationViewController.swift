@@ -6,8 +6,11 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import ReactorKit
 
-class RegistrationViewController: UIViewController {
+final class RegistrationViewController: UIViewController {
     
     private var viewModel = RegistrationViewModel()
     private var profileImage: UIImage?
