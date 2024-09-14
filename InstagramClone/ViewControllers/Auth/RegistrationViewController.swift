@@ -6,14 +6,15 @@
 //
 
 import UIKit
-import RxSwift
 import RxCocoa
 import ReactorKit
 
 final class RegistrationViewController: UIViewController {
     
+    private let reactor = RegistrationReactor()
+    private let disposeBag = DisposeBag()
+    
     private var viewModel = RegistrationViewModel()
-    private var profileImage: UIImage?
     weak var delegate: AuthenticationDelegate?
     
     private let plusPhotoButton: UIButton = {
@@ -47,7 +48,6 @@ final class RegistrationViewController: UIViewController {
         button.layer.cornerRadius = 5
         button.setHeight(50)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
-        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
         button.isEnabled = false
         return button
     }()
@@ -63,26 +63,27 @@ final class RegistrationViewController: UIViewController {
         super.viewDidLoad()
         configureUI()
         configureNotificationObserver()
+        
+        bind(reactor: reactor)
     }
     
-    // MARK: - 액션
-    @objc func handleSignUp() {
-        guard let email = emailTextField.text else { return }
-        guard let password = passwordTextField.text else { return }
-        guard let fullname = fullnameTextField.text else { return }
-        guard let username = usernameTextField.text?.lowercased() else { return }
-        guard let profileImage = self.profileImage else { return }
-        
-        let credentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
-        AuthService.registerUser(withCredential: credentials) { error in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            
-            self.delegate?.authenticationComplete()
-        }
-    }
+//    @objc func handleSignUp() {
+//        guard let email = emailTextField.text else { return }
+//        guard let password = passwordTextField.text else { return }
+//        guard let fullname = fullnameTextField.text else { return }
+//        guard let username = usernameTextField.text?.lowercased() else { return }
+//        guard let profileImage = self.profileImage else { return }
+//        
+//        let credentials = AuthCredentials(email: email, password: password, fullname: fullname, username: username, profileImage: profileImage)
+//        AuthService.registerUser(withCredential: credentials) { error in
+//            if let error = error {
+//                print(error.localizedDescription)
+//                return
+//            }
+//            
+//            self.delegate?.authenticationComplete()
+//        }
+//    }
     
     @objc func handleShowLogin() {
         navigationController?.popViewController(animated: true)
@@ -98,20 +99,16 @@ final class RegistrationViewController: UIViewController {
         } else {
             viewModel.username = sender.text
         }
-        
-        updateForm()
     }
     
     @objc func handleProfilePhotoSelect() {
         let picker = UIImagePickerController()
         picker.delegate = self
         picker.allowsEditing = true
-        
         present(picker, animated: true, completion: nil)
     }
     
-    
-    func configureUI() {
+    private func configureUI() {
         configureGradientLayer()
         
         view.addSubview(plusPhotoButton)
@@ -132,7 +129,75 @@ final class RegistrationViewController: UIViewController {
         alreadyHaveAccountButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor)
     }
     
-    func configureNotificationObserver() {
+    private func bind(reactor: RegistrationReactor) {
+        
+        /// input
+        emailTextField.rx.text
+            .orEmpty
+            .map { RegistrationReactor.Action.emailChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        passwordTextField.rx.text
+            .orEmpty
+            .map { RegistrationReactor.Action.passwordChange($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        fullnameTextField.rx.text
+            .orEmpty
+            .map { RegistrationReactor.Action.fullnameChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        usernameTextField.rx.text
+            .orEmpty
+            .map { RegistrationReactor.Action.usernameChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        signUpButton.rx.tap
+            .map { RegistrationReactor.Action.signUp }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        /// output
+        reactor.state
+            .map { $0.profileImage }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] image in
+                guard let self = self, let image = image else { return }
+                
+                self.plusPhotoButton.layer.cornerRadius = self.plusPhotoButton.frame.width / 2
+                self.plusPhotoButton.layer.masksToBounds = true
+                self.plusPhotoButton.layer.borderColor = UIColor.white.cgColor
+                self.plusPhotoButton.layer.borderWidth = 2
+                self.plusPhotoButton.setImage(image.withRenderingMode(.alwaysOriginal), for: .normal)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isSignUpEnabled }
+            .bind(to: signUpButton.rx.isEnabled)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isSignUpEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5) }
+            .bind(to: signUpButton.rx.backgroundColor)
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isSignupCompleted }
+            .filter { $0 }
+            .subscribe(onNext: { [weak self] _ in
+                print("Authentication completed")
+                self?.delegate?.authenticationComplete()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func configureNotificationObserver() {
         emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
         passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
         fullnameTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
@@ -140,26 +205,11 @@ final class RegistrationViewController: UIViewController {
     }
 }
 
-// MARK: FormViewModel
-extension RegistrationViewController: FormViewModel {
-    func updateForm() {
-        signUpButton.backgroundColor = viewModel.buttonBackgroundColor
-        signUpButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
-        signUpButton.isEnabled = viewModel.formIsValid
-    }
-}
-
 // MARK: -
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[.editedImage] as? UIImage else { return }
-        profileImage = selectedImage
-        
-        plusPhotoButton.layer.cornerRadius = plusPhotoButton.frame.width / 2
-        plusPhotoButton.layer.masksToBounds = true
-        plusPhotoButton.layer.borderColor = UIColor.white.cgColor
-        plusPhotoButton.layer.borderWidth = 2
-        plusPhotoButton.setImage(selectedImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        reactor.action.onNext(.profileImageSelected(selectedImage))
         
         self.dismiss(animated: true, completion: nil)
     }

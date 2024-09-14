@@ -10,6 +10,7 @@
 		0C4F477389ED5D773C29236E /* Pods_InstagramClone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88249C02BC4A16F7E24C08B0 /* Pods_InstagramClone.framework */; };
 		DE341B252C8F1CCA00189845 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */; };
 		DE341B272C8F1E4800189845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE341B262C8F1E4800189845 /* Assets.xcassets */; };
+		DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4BC682C944E7400025C18 /* RegistrationReactor.swift */; };
 		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
 		F405C5292929E4AB00100735 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5282929E4AB00100735 /* Notification.swift */; };
 		F405C52B2929E79100100735 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C52A2929E79100100735 /* NotificationService.swift */; };
@@ -60,6 +61,7 @@
 		C2BD051AFDB6D8E90D49FFBC /* Pods-InstagramClone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InstagramClone.debug.xcconfig"; path = "Target Support Files/Pods-InstagramClone/Pods-InstagramClone.debug.xcconfig"; sourceTree = "<group>"; };
 		DE341B242C8F1CCA00189845 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		DE341B262C8F1E4800189845 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DED4BC682C944E7400025C18 /* RegistrationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationReactor.swift; sourceTree = "<group>"; };
 		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		F405C5282929E4AB00100735 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		F405C52A2929E79100100735 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
@@ -135,6 +137,22 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		DED4BC662C944E5600025C18 /* Reactor */ = {
+			isa = PBXGroup;
+			children = (
+				DED4BC672C944E6800025C18 /* Auth */,
+			);
+			path = Reactor;
+			sourceTree = "<group>";
+		};
+		DED4BC672C944E6800025C18 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				DED4BC682C944E7400025C18 /* RegistrationReactor.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
 		F4B6DE68291CFFFD00A8FEA9 = {
 			isa = PBXGroup;
 			children = (
@@ -158,8 +176,9 @@
 			children = (
 				F4B6DE90291D005600A8FEA9 /* Model */,
 				F4B6DE8F291D005200A8FEA9 /* Views */,
+				F4B6DE8A291D003E00A8FEA9 /* ViewControllers */,
+				DED4BC662C944E5600025C18 /* Reactor */,
 				F4B6DE8E291D005000A8FEA9 /* ViewModel */,
-				F4B6DE8A291D003E00A8FEA9 /* Controllers */,
 				F4B6DE89291D003B00A8FEA9 /* API */,
 				F4B6DE88291D002900A8FEA9 /* Utils */,
 				F4B6DE74291CFFFD00A8FEA9 /* AppDelegate.swift */,
@@ -197,7 +216,7 @@
 			path = API;
 			sourceTree = "<group>";
 		};
-		F4B6DE8A291D003E00A8FEA9 /* Controllers */ = {
+		F4B6DE8A291D003E00A8FEA9 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
 				F4B6DEA5291DE8B500A8FEA9 /* Auth */,
@@ -210,7 +229,7 @@
 				F429E6CF29239A0D0003103C /* UploadPostViewController.swift */,
 				F460225929266D5D000DE2D5 /* CommentViewController.swift */,
 			);
-			path = Controllers;
+			path = ViewControllers;
 			sourceTree = "<group>";
 		};
 		F4B6DE8E291D005000A8FEA9 /* ViewModel */ = {
@@ -421,6 +440,7 @@
 				F4E9F2332924DCBF00322206 /* PostService.swift in Sources */,
 				F4D05CD3291FBE65000C1C97 /* UserService.swift in Sources */,
 				F4D05CCE291F6696000C1C97 /* ProfileCell.swift in Sources */,
+				DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */,
 				F4B6DEA4291D20F600A8FEA9 /* Extensions.swift in Sources */,
 				F405C5272929DEE500100735 /* NotificationCell.swift in Sources */,
 				F4B6DE77291CFFFD00A8FEA9 /* SceneDelegate.swift in Sources */,
@@ -575,11 +595,11 @@
 				DEVELOPMENT_TEAM = BFTA9SX898;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = InstagramClone/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "게시글을 올리시려면 사진에 대한 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -604,11 +624,11 @@
 				DEVELOPMENT_TEAM = BFTA9SX898;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = InstagramClone/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "게시글을 올리시려면 사진에 대한 접근 권한을 허용해주세요";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
