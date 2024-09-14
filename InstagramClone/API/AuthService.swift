@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import RxSwift
 
 struct AuthCredentials {
     let email: String
@@ -21,29 +22,36 @@ struct AuthService {
         Auth.auth().signIn(withEmail: email, password: password, completion: completion )
     }
     
-    static func registerUser(withCredential credentials: AuthCredentials, completion: @escaping(Error?) -> Void) {
-        ImageUploader.uploadImage(image: credentials.profileImage) { imageUrl in
-            Auth.auth().createUser(withEmail: credentials.email, password: credentials.password) {
-                (result, error) in
-                if let error = error {
-                    print(error.localizedDescription)
-                    return
+    static func registerUser(withCredential credentials: AuthCredentials) -> Observable<Void> {
+        return .create { observer in
+            ImageUploader.uploadImage(image: credentials.profileImage) { imageUrl in
+                Auth.auth().createUser(withEmail: credentials.email, password: credentials.password) { (result, error) in
+                    if let error = error {
+                        observer.onError(error)
+                        return
+                    }
+                    
+                    guard let uid = result?.user.uid else { return }
+                    
+                    let data: [String: Any] = [
+                        "email": credentials.email,
+                        "fullname": credentials.fullname,
+                        "profileImageUrl": imageUrl,
+                        "uid": uid,
+                        "username": credentials.username
+                    ]
+                    
+                    COLLECTION_USERS.document(uid).setData(data) { error in
+                        if let error = error {
+                            observer.onError(error)
+                        } else {
+                            observer.onNext(())
+                            observer.onCompleted()
+                        }
+                    }
                 }
-                
-                guard let uid = result?.user.uid else { return }
-                
-                let data: [String: Any] = [
-                    "email": credentials.email,
-                    "fullname": credentials.fullname,
-                    "profileImageUrl": imageUrl,
-                    "uid": uid,
-                    "username": credentials.username
-                ]
-                
-                COLLECTION_USERS.document(uid).setData(data, completion: completion)
             }
+            return Disposables.create()
         }
-        
-        
     }
 }
