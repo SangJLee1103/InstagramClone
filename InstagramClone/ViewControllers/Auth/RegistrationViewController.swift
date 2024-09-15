@@ -149,12 +149,12 @@ final class RegistrationViewController: UIViewController {
         
         reactor.state
             .map { $0.isSignUpEnabled }
-            .bind(to: signUpButton.rx.isEnabled)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.isSignUpEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5) }
-            .bind(to: signUpButton.rx.backgroundColor)
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] isEnabled in
+                self?.signUpButton.isEnabled = isEnabled
+                self?.signUpButton.backgroundColor = isEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5)
+                self?.signUpButton.setTitleColor(isEnabled ? .white : UIColor(white: 1, alpha: 0.67), for: .normal)
+            })
             .disposed(by: disposeBag)
         
         reactor.state
