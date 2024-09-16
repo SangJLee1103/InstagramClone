@@ -47,44 +47,20 @@ final class RegistrationReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .emailChanged(let email):
-            return Observable.concat([
-                Observable.just(.setEmail(email)),
-                validateForm()
-            ])
+            return Observable.just(.setEmail(email))
         case .passwordChange(let password):
-            return Observable.concat([
-                Observable.just(.setPassword(password)),
-                validateForm()
-            ])
+            return Observable.just(.setPassword(password))
         case .fullnameChanged(let fullname):
-            return Observable.concat([
-                Observable.just(.setFullname(fullname)),
-                validateForm()
-            ])
+            return Observable.just(.setFullname(fullname))
         case .usernameChanged(let username):
-            return Observable.concat([
-                Observable.just(.setUsername(username)),
-                validateForm()
-            ])
+            return Observable.just(.setUsername(username))
         case .profileImageSelected(let profileImage):
-            return Observable.concat([
-                Observable.just(.setProfileImage(profileImage)),
-                validateForm()
-            ])
+            return Observable.just(.setProfileImage(profileImage))
         case .signUp:
             return registerUser()
         case .setError(let errorMessage):
             return Observable.just(Mutation.setError(errorMessage))
         }
-    }
-    
-    private func validateForm() -> Observable<Mutation> {
-        let isSignUpEnabled = !currentState.email.isEmpty &&
-        !currentState.password.isEmpty &&
-        !currentState.fullname.isEmpty &&
-        !currentState.username.isEmpty &&
-        currentState.profileImage != nil
-        return Observable.just(Mutation.setSignUpEnabled(isSignUpEnabled))
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
@@ -108,6 +84,8 @@ final class RegistrationReactor: Reactor {
         case .signupCompleted:
             newstate.isSignupCompleted = true
         }
+        
+        newstate.isSignUpEnabled = !newstate.email.isEmpty && !newstate.password.isEmpty && !newstate.fullname.isEmpty && !newstate.username.isEmpty && newstate.profileImage != nil
         
         return newstate
     }

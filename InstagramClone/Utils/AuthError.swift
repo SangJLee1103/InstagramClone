@@ -22,21 +22,19 @@ enum AuthError: Error {
     var errorMessage: String {
         switch self {
         case .invalidEmail:
-            return "유효하지 않은 이메일 형식입니다."
+            return "잘못된 이메일 형식입니다."
         case .emailAlreadyInUse:
             return "이미 사용 중인 이메일입니다."
         case .weakPassword:
-            return "비밀번호는 최소 6자리 이상이어야 합니다."
-        case .wrongPassword:
-            return "비밀번호가 올바르지 않습니다."
-        case .userNotFound:
-            return "사용자를 찾을 수 없습니다."
+            return "비밀번호는 6자 이상이어야 합니다."
+        case .wrongPassword, .userNotFound:
+            return "이메일 혹은 비밀번호가 일치하지 않습니다."
         case .networkError:
-            return "네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요."
+            return "네트워크 연결에 실패 하였습니다."
         case .userDisabled:
             return "해당 계정은 비활성화되어 있습니다."
         case .unknown:
-            return "알 수 없는 오류가 발생했습니다. 다시 시도해주세요."
+            return "로그인에 실패 하였습니다."
         }
     }
     
@@ -50,10 +48,8 @@ enum AuthError: Error {
                 return .emailAlreadyInUse
             case .weakPassword:
                 return .weakPassword
-            case .wrongPassword:
+            case .wrongPassword, .userNotFound:
                 return .wrongPassword
-            case .userNotFound:
-                return .userNotFound
             case .networkError:
                 return .networkError
             case .userDisabled:

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Toast_Swift
 import RxCocoa
 import ReactorKit
 
@@ -97,7 +98,7 @@ final class RegistrationViewController: UIViewController {
     }
     
     private func bind(reactor: RegistrationReactor) {
-        /// input
+        /// Input
         emailTextField.rx.text
             .orEmpty
             .distinctUntilChanged()
@@ -131,7 +132,7 @@ final class RegistrationViewController: UIViewController {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        /// output
+        /// Output
         reactor.state
             .map { $0.profileImage }
             .distinctUntilChanged()
@@ -149,12 +150,14 @@ final class RegistrationViewController: UIViewController {
         
         reactor.state
             .map { $0.isSignUpEnabled }
-            .bind(to: signUpButton.rx.isEnabled)
-            .disposed(by: disposeBag)
-        
-        reactor.state
-            .map { $0.isSignUpEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5) }
-            .bind(to: signUpButton.rx.backgroundColor)
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, isEnabled in
+                owner.signUpButton.isEnabled = isEnabled
+                owner.signUpButton.backgroundColor = isEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5)
+                owner.signUpButton.setTitleColor(isEnabled ? .white : UIColor(white: 1, alpha: 0.67), for: .normal)
+            })
             .disposed(by: disposeBag)
         
         reactor.state
@@ -173,18 +176,12 @@ final class RegistrationViewController: UIViewController {
             .observe(on: MainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { owner, errorMessage in
-                owner.showErrorAlert(message: errorMessage)
-                
                 /// ReactorKit의 상태관리 방식: 같은 에러가 다시 발생해도 State의 값이 변경되지 않으면 UI에 변화가 반영되지 않음
-                owner.reactor.action.onNext(.setError(nil))
+                owner.view.makeToast(errorMessage, position: .top) { [weak self] _ in
+                    self?.reactor.action.onNext(.setError(nil))
+                }
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
     }
 }
 
