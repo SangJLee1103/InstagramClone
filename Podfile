@@ -15,6 +15,7 @@ target 'InstagramClone' do
 	pod 'ActiveLabel'
 	pod 'SDWebImage', '~>4.4.2'
 	pod 'JGProgressHUD', '~>2.0.3'
+	pod 'Toast-Swift', '~> 5.1.1'
 	pod 'YPImagePicker'
 	pod 'RxSwift'
 	pod 'RxCocoa'
