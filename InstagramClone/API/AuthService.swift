@@ -18,8 +18,20 @@ struct AuthCredentials {
 }
 
 struct AuthService {
-    static func loginUserIn(withEmail email: String, password: String, completion: @escaping(AuthDataResult?, Error?) -> Void) {
-        Auth.auth().signIn(withEmail: email, password: password, completion: completion )
+    static func loginUserIn(withEmail email: String, password: String) -> Observable<Void> {
+        
+        return .create { observer in
+            Auth.auth().signIn(withEmail: email, password: password) { (result, error) in
+                if let error = error {
+                    observer.onError(error)
+                    return
+                } else {
+                    observer.onNext(())
+                    observer.onCompleted()
+                }
+            }
+            return Disposables.create()
+        }
     }
     
     static func registerUser(withCredential credentials: AuthCredentials) -> Observable<Void> {

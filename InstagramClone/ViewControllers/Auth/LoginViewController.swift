@@ -6,14 +6,18 @@
 //
 
 import UIKit
+import RxCocoa
+import ReactorKit
 
 protocol AuthenticationDelegate: class {
     func authenticationComplete()
 }
 
-class LoginViewController: UIViewController {
+final class LoginViewController: BaseViewController {
     
-    private var viewModel = LoginViewModel()
+    private let reactor = LoginReactor()
+    private let disposeBag = DisposeBag()
+    
     weak var delegate: AuthenticationDelegate?
     
     private let iconImage: UIImageView = {
@@ -43,7 +47,6 @@ class LoginViewController: UIViewController {
         button.setHeight(50)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
         button.isEnabled = false
-        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         return button
     }()
     
@@ -63,19 +66,7 @@ class LoginViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        configureNotificationObserver()
-    }
-    
-    @objc func handleLogin() {
-        guard let email = emailTextField.text else { return }
-        guard let password = passwordTextField.text else { return }
-        AuthService.loginUserIn(withEmail: email, password: password) { (result, error) in
-            if let error = error {
-                print(error.localizedDescription)
-                return
-            }
-            self.delegate?.authenticationComplete()
-        }
+        bind(reactor: reactor)
     }
     
     // MARK: - 액션
@@ -83,16 +74,6 @@ class LoginViewController: UIViewController {
         let controller = RegistrationViewController()
         controller.delegate = delegate
         self.navigationController?.pushViewController(controller, animated: true)
-    }
-    
-    @objc func textDidChange(sender: UITextField) {
-        if sender == emailTextField {
-            viewModel.email = sender.text
-        } else {
-            viewModel.password = sender.text
-        }
-        
-        updateForm()
     }
     
     func configureUI() {
@@ -121,18 +102,60 @@ class LoginViewController: UIViewController {
         dontHaveAccountButton.anchor(bottom: view.safeAreaLayoutGuide.bottomAnchor)
     }
     
-    
-    func configureNotificationObserver() {
-        emailTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-        passwordTextField.addTarget(self, action: #selector(textDidChange), for: .editingChanged)
-    }
-}
-
-// MARK: FormViewModel
-extension LoginViewController: FormViewModel {
-    func updateForm() {
-        loginButton.backgroundColor = viewModel.buttonBackgroundColor
-        loginButton.setTitleColor(viewModel.buttonTitleColor, for: .normal)
-        loginButton.isEnabled = viewModel.formIsValid
+    private func bind(reactor: LoginReactor) {
+        // Input
+        emailTextField.rx.text
+            .orEmpty
+            .distinctUntilChanged()
+            .map { LoginReactor.Action.emailChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        passwordTextField.rx.text
+            .orEmpty
+            .distinctUntilChanged()
+            .map { LoginReactor.Action.passwordChanged($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        loginButton.rx.tap
+            .map { LoginReactor.Action.login }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        
+        // Output
+        reactor.state
+            .map { $0.isLoginEnabled }
+            .distinctUntilChanged()
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, isEnabled in
+                owner.loginButton.isEnabled = isEnabled
+                owner.loginButton.backgroundColor = isEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5)
+                owner.loginButton.setTitleColor(isEnabled ? .white : UIColor(white: 1, alpha: 0.67), for: .normal)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.isLoginCompleted }
+            .filter { $0 }
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.delegate?.authenticationComplete()
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state
+            .map { $0.errorMessage }
+            .distinctUntilChanged()
+            .compactMap { $0 }
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, errorMessage in
+                owner.showErrorAlert(message: errorMessage)
+                owner.reactor.action.onNext(.setError(nil))
+            })
+            .disposed(by: disposeBag)
     }
 }

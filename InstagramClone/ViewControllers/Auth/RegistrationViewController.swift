@@ -9,7 +9,7 @@ import UIKit
 import RxCocoa
 import ReactorKit
 
-final class RegistrationViewController: UIViewController {
+final class RegistrationViewController: BaseViewController {
     
     private let reactor = RegistrationReactor()
     private let disposeBag = DisposeBag()
@@ -97,7 +97,7 @@ final class RegistrationViewController: UIViewController {
     }
     
     private func bind(reactor: RegistrationReactor) {
-        /// input
+        /// Input
         emailTextField.rx.text
             .orEmpty
             .distinctUntilChanged()
@@ -131,7 +131,7 @@ final class RegistrationViewController: UIViewController {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        /// output
+        /// Output
         reactor.state
             .map { $0.profileImage }
             .distinctUntilChanged()
@@ -150,10 +150,12 @@ final class RegistrationViewController: UIViewController {
         reactor.state
             .map { $0.isSignUpEnabled }
             .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] isEnabled in
-                self?.signUpButton.isEnabled = isEnabled
-                self?.signUpButton.backgroundColor = isEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5)
-                self?.signUpButton.setTitleColor(isEnabled ? .white : UIColor(white: 1, alpha: 0.67), for: .normal)
+            .observe(on: MainScheduler.instance)
+            .withUnretained(self)
+            .subscribe(onNext: { owner, isEnabled in
+                owner.signUpButton.isEnabled = isEnabled
+                owner.signUpButton.backgroundColor = isEnabled ? #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1) : #colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1).withAlphaComponent(0.5)
+                owner.signUpButton.setTitleColor(isEnabled ? .white : UIColor(white: 1, alpha: 0.67), for: .normal)
             })
             .disposed(by: disposeBag)
         
@@ -179,12 +181,6 @@ final class RegistrationViewController: UIViewController {
                 owner.reactor.action.onNext(.setError(nil))
             })
             .disposed(by: disposeBag)
-    }
-    
-    private func showErrorAlert(message: String) {
-        let alert = UIAlertController(title: "오류", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "확인", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
     }
 }
 
