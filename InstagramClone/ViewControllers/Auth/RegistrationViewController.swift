@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import Toast_Swift
 import RxCocoa
 import ReactorKit
 
-final class RegistrationViewController: BaseViewController {
+final class RegistrationViewController: UIViewController {
     
     private let reactor = RegistrationReactor()
     private let disposeBag = DisposeBag()
@@ -175,10 +176,10 @@ final class RegistrationViewController: BaseViewController {
             .observe(on: MainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { owner, errorMessage in
-                owner.showErrorAlert(message: errorMessage)
-                
                 /// ReactorKit의 상태관리 방식: 같은 에러가 다시 발생해도 State의 값이 변경되지 않으면 UI에 변화가 반영되지 않음
-                owner.reactor.action.onNext(.setError(nil))
+                owner.view.makeToast(errorMessage, position: .top) { [weak self] _ in
+                    self?.reactor.action.onNext(.setError(nil))
+                }
             })
             .disposed(by: disposeBag)
     }

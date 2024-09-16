@@ -1210,6 +1210,7 @@ PODS:
     - SDWebImage/Core (= 4.4.8)
   - SDWebImage/Core (4.4.8)
   - SteviaLayout (5.1.2)
+  - Toast-Swift (5.1.1)
   - WeakMapTable (1.2.0)
   - YPImagePicker (5.2.2):
     - PryntTrimmerView (= 4.0.2)
@@ -1228,6 +1229,7 @@ DEPENDENCIES:
   - RxCocoa
   - RxSwift
   - SDWebImage (~> 4.4.2)
+  - Toast-Swift (~> 5.1.1)
   - YPImagePicker
 
 SPEC REPOS:
@@ -1268,6 +1270,7 @@ SPEC REPOS:
     - RxSwift
     - SDWebImage
     - SteviaLayout
+    - Toast-Swift
     - WeakMapTable
     - YPImagePicker
 
@@ -1308,9 +1311,10 @@ SPEC CHECKSUMS:
   RxSwift: b9a93a26031785159e11abd40d1a55bcb8057e52
   SDWebImage: 783af2c3fa36291a250030c4752ee370a9a51d13
   SteviaLayout: 05424e528d643657d39ce72c786e4adf13cfc5f2
+  Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
   WeakMapTable: 05c694ce8439a7a9ebabb56187287a63c57673d6
   YPImagePicker: afc81b3cffab05a6e7261c5daf80dc31b4e917b4
 
-PODFILE CHECKSUM: 1bf11b0a7ec8ea7c460beca6f812e6dfc6e8edb0
+PODFILE CHECKSUM: c33979ce142b5e773c0487cedd0eda77b0bb128a
 
 COCOAPODS: 1.15.2

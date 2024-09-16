@@ -13,7 +13,7 @@ protocol AuthenticationDelegate: class {
     func authenticationComplete()
 }
 
-final class LoginViewController: BaseViewController {
+final class LoginViewController: UIViewController {
     
     private let reactor = LoginReactor()
     private let disposeBag = DisposeBag()
@@ -140,6 +140,7 @@ final class LoginViewController: BaseViewController {
         reactor.state
             .map { $0.isLoginCompleted }
             .filter { $0 }
+            .observe(on: MainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { owner, _ in
                 owner.delegate?.authenticationComplete()
@@ -153,8 +154,9 @@ final class LoginViewController: BaseViewController {
             .observe(on: MainScheduler.instance)
             .withUnretained(self)
             .subscribe(onNext: { owner, errorMessage in
-                owner.showErrorAlert(message: errorMessage)
-                owner.reactor.action.onNext(.setError(nil))
+                owner.view.makeToast(errorMessage, position: .top) { [weak self] _ in
+                    self?.reactor.action.onNext(.setError(nil))
+                }
             })
             .disposed(by: disposeBag)
     }
