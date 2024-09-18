@@ -94,7 +94,7 @@ extension ProfileViewController {
 extension ProfileViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        controller.post = posts[indexPath.row]
+//        controller.post = posts[indexPath.row]
         navigationController?.pushViewController(controller, animated: true)
     }
 }
