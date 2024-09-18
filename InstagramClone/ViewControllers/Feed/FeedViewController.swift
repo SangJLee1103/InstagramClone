@@ -7,26 +7,25 @@
 
 import UIKit
 import Firebase
+import RxSwift
+import RxCocoa
+import ReactorKit
 
 private let reuseIdentifier = "Cell"
 
 class FeedViewController: UICollectionViewController {
     
-    private var posts = [Post]() {
-        didSet { collectionView.reloadData() }
-    }
-    var post: Post?
+    private let reactor = FeedReactor()
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         configureUI()
-        fetchPosts()
+        bind(reactor: reactor)
     }
     
-    // MARK: - 액션
-    @objc func handleRefresh() {
-        posts.removeAll()
-        fetchPosts()
+    func handleRefresh() {
+        reactor.action.onNext(.refresh)
     }
     
     @objc func handleLogout() {
@@ -38,63 +37,66 @@ class FeedViewController: UICollectionViewController {
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         } catch {
-            print("로그아웃 실패")
+            print("DEBUG: Failed Logout")
         }
     }
     
-    func fetchPosts() {
-        guard post == nil else { return }
-        
-        PostService.fetchPosts { posts in
-            self.posts = posts
-            self.checkIfUserLikedPosts()
-            self.collectionView.refreshControl?.endRefreshing()
-        }
-    }
-    
-    func checkIfUserLikedPosts() {
-        self.posts.forEach { post in
-            PostService.checkIfUserLikedPost(post: post) { didLike in
-                if let index = self.posts.firstIndex(where: { $0.postId == post.postId}) {
-                    self.posts[index].didLike = didLike
-                }
-            }
-        }
-    }
-    
-    
-    func configureUI() {
+    private func configureUI() {
         collectionView.backgroundColor = .white
         
         collectionView.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
-        if post == nil {
-            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
-        }
-        
         navigationItem.title = "피드"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         
         let refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
         collectionView.refreshControl = refresher
+    }
+    
+    private func bind(reactor: FeedReactor) {
+        // Input
+        collectionView.refreshControl?.rx.controlEvent(.valueChanged)
+            .map { FeedReactor.Action.refresh }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // Output
+        reactor.action.onNext(.fetchPosts)
+        
+        reactor.state.map { $0.posts }
+            .distinctUntilChanged()
+            .withUnretained(self)
+            .observe(on: MainScheduler.instance)
+            .bind { owner, posts in
+                owner.collectionView.reloadData()
+                owner.collectionView.refreshControl?.endRefreshing()
+            }
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.posts }
+            .filter { !$0.isEmpty }
+            .distinctUntilChanged()
+            .withUnretained(self)
+            .subscribe(onNext: { owner, _ in
+                owner.reactor.action.onNext(.checkIfUserLikedPosts)
+            })
+            .disposed(by: disposeBag)
+        
     }
 }
 
 //MARK: 컬렉션 뷰 데이터 소스
 extension FeedViewController {
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return post == nil ? posts.count : 1
+        return reactor.currentState.posts.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! FeedCell
         cell.delegate = self
         
-        if let post = post {
-            cell.viewModel = PostViewModel(post: post)
-        } else {
-            cell.viewModel = PostViewModel(post: posts[indexPath.row])
-        }
+        let post = reactor.currentState.posts[indexPath.row]
+        cell.viewModel = PostViewModel(post: post)
         return cell
     }
 }
