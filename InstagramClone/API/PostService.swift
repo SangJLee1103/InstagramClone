@@ -6,7 +6,9 @@
 //
 
 import UIKit
+import RxSwift
 import Firebase
+import FirebaseFirestore
 
 struct PostService {
     
@@ -28,12 +30,17 @@ struct PostService {
         }
     }
     
-    static func fetchPosts(completion: @escaping([Post]) -> Void) {
-        COLLECTION_POSTS.order(by: "timestamp", descending: true).getDocuments { snapshot, error in
-            guard let documents = snapshot?.documents else { return }
+    static func fetchPosts() -> Observable<[Post]> {
+        return .create { observer in
+            COLLECTION_POSTS.order(by: "timestamp", descending: true).getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else { return }
+                
+                let posts = documents.map({ Post(postId: $0.documentID, dictionary: $0.data()) })
+                observer.onNext(posts)
+                observer.onCompleted()
+            }
             
-            let posts = documents.map({ Post(postId: $0.documentID, dictionary: $0.data()) })
-            completion(posts)
+            return Disposables.create()
         }
     }
     
@@ -61,8 +68,6 @@ struct PostService {
         }
     }
     
-    
-    
     static func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
@@ -86,12 +91,21 @@ struct PostService {
         }
     }
     
-    static func checkIfUserLikedPost(post: Post, completion: @escaping(Bool) -> Void) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId).getDocument { (snapshot, _) in
-            guard let didLike = snapshot?.exists else { return }
-            completion(didLike)
+    static func checkIfUserLikedPost(post: Post) -> Observable<Bool> {
+        return Observable.create { observer in
+            guard let uid = Auth.auth().currentUser?.uid else {
+                observer.onNext(false)
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId).getDocument { (snapshot, _) in
+                let didLike = snapshot?.exists ?? false
+                observer.onNext(didLike)
+                observer.onCompleted()
+            }
+            
+            return Disposables.create()
         }
     }
 }
