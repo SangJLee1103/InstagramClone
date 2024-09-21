@@ -8,7 +8,7 @@
 import Foundation
 import Firebase
 
-enum AuthError: Error {
+enum FirebaseError: Error {
     case invalidEmail
     case emailAlreadyInUse
     case weakPassword
@@ -44,7 +44,7 @@ enum AuthError: Error {
         }
     }
     
-    static func from(_ error: Error) -> AuthError {
+    static func from(_ error: Error) -> FirebaseError {
         let errorCode = (error as NSError).code
         if let authErrorCode = AuthErrorCode.Code(rawValue: errorCode) {
             switch authErrorCode {

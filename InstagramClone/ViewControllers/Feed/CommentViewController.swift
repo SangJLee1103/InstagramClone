@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import RxSwift
+import ReactorKit
 
 private let reuseIdentifier = "CommentCell"
 
-class CommentViewController: UICollectionViewController {
+final class CommentViewController: UICollectionViewController {
     
     private let post: Post
     private var comments = [Comment]()

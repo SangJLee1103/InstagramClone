@@ -12,7 +12,9 @@
 		DE341B272C8F1E4800189845 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DE341B262C8F1E4800189845 /* Assets.xcassets */; };
 		DEB0F8CC2C97F253008C913A /* FeedReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0F8CB2C97F253008C913A /* FeedReactor.swift */; };
 		DEB0F8CE2C9AD43C008C913A /* FeedCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0F8CD2C9AD43C008C913A /* FeedCellReactor.swift */; };
-		DEC75D282C95717400C122C3 /* AuthError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75D272C95717400C122C3 /* AuthError.swift */; };
+		DEB0F8D22C9E9C95008C913A /* CommentReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0F8D12C9E9C95008C913A /* CommentReactor.swift */; };
+		DEB0F8D42C9EA389008C913A /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0F8D32C9EA389008C913A /* UserManager.swift */; };
+		DEC75D282C95717400C122C3 /* FirebaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75D272C95717400C122C3 /* FirebaseError.swift */; };
 		DEC75D2C2C96997B00C122C3 /* LoginReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75D2B2C96997B00C122C3 /* LoginReactor.swift */; };
 		DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4BC682C944E7400025C18 /* RegistrationReactor.swift */; };
 		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
@@ -66,7 +68,9 @@
 		DE341B262C8F1E4800189845 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DEB0F8CB2C97F253008C913A /* FeedReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedReactor.swift; sourceTree = "<group>"; };
 		DEB0F8CD2C9AD43C008C913A /* FeedCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCellReactor.swift; sourceTree = "<group>"; };
-		DEC75D272C95717400C122C3 /* AuthError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthError.swift; sourceTree = "<group>"; };
+		DEB0F8D12C9E9C95008C913A /* CommentReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentReactor.swift; sourceTree = "<group>"; };
+		DEB0F8D32C9EA389008C913A /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		DEC75D272C95717400C122C3 /* FirebaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseError.swift; sourceTree = "<group>"; };
 		DEC75D2B2C96997B00C122C3 /* LoginReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginReactor.swift; sourceTree = "<group>"; };
 		DED4BC682C944E7400025C18 /* RegistrationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationReactor.swift; sourceTree = "<group>"; };
 		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
@@ -147,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				F4B6DE93291D04EE00A8FEA9 /* FeedViewController.swift */,
+				F460225929266D5D000DE2D5 /* CommentViewController.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -156,6 +161,7 @@
 			children = (
 				DEB0F8CB2C97F253008C913A /* FeedReactor.swift */,
 				DEB0F8CD2C9AD43C008C913A /* FeedCellReactor.swift */,
+				DEB0F8D12C9E9C95008C913A /* CommentReactor.swift */,
 			);
 			path = Feed;
 			sourceTree = "<group>";
@@ -224,7 +230,8 @@
 				F4B6DEA3291D20F600A8FEA9 /* Extensions.swift */,
 				F4D05CD4291FBEB2000C1C97 /* Constants.swift */,
 				F479D99329244B5C0059BA8B /* InputTextView.swift */,
-				DEC75D272C95717400C122C3 /* AuthError.swift */,
+				DEC75D272C95717400C122C3 /* FirebaseError.swift */,
+				DEB0F8D32C9EA389008C913A /* UserManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -253,7 +260,6 @@
 				F4B6DE99291D053E00A8FEA9 /* NotificationVIewContorller.swift */,
 				F4B6DE9B291D054800A8FEA9 /* ProfileViewController.swift */,
 				F429E6CF29239A0D0003103C /* UploadPostViewController.swift */,
-				F460225929266D5D000DE2D5 /* CommentViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -435,7 +441,7 @@
 				F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */,
 				F4D05CD1291F66B4000C1C97 /* ProfileHeader.swift in Sources */,
 				F429E6D029239A0D0003103C /* UploadPostViewController.swift in Sources */,
-				DEC75D282C95717400C122C3 /* AuthError.swift in Sources */,
+				DEC75D282C95717400C122C3 /* FirebaseError.swift in Sources */,
 				F4D05CC0291DE8EC000C1C97 /* LoginViewController.swift in Sources */,
 				F4B6DE96291D04FD00A8FEA9 /* SearchViewController.swift in Sources */,
 				F4B6DEA0291D14DB00A8FEA9 /* FeedCell.swift in Sources */,
@@ -451,6 +457,7 @@
 				F4B6DE94291D04EE00A8FEA9 /* FeedViewController.swift in Sources */,
 				DEB0F8CE2C9AD43C008C913A /* FeedCellReactor.swift in Sources */,
 				F4D05CD92920C4EB000C1C97 /* ProfileHeaderViewModel.swift in Sources */,
+				DEB0F8D22C9E9C95008C913A /* CommentReactor.swift in Sources */,
 				F479D99429244B5C0059BA8B /* InputTextView.swift in Sources */,
 				F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */,
 				F4B6DE98291D053000A8FEA9 /* ImageSelectorViewController.swift in Sources */,
@@ -458,6 +465,7 @@
 				F4B6DE9C291D054800A8FEA9 /* ProfileViewController.swift in Sources */,
 				F4B6DE92291D02CC00A8FEA9 /* MainTabViewController.swift in Sources */,
 				F460225A29266D5D000DE2D5 /* CommentViewController.swift in Sources */,
+				DEB0F8D42C9EA389008C913A /* UserManager.swift in Sources */,
 				F4D05CCA291F45A0000C1C97 /* ImageUploader.swift in Sources */,
 				F405C52B2929E79100100735 /* NotificationService.swift in Sources */,
 				F4E9F2352924EE5900322206 /* Post.swift in Sources */,
