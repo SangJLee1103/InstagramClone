@@ -7,7 +7,7 @@
 
 import Firebase
 
-struct Post {
+struct Post: Equatable {
     var caption: String
     var likes: Int
     let imageUrl: String

@@ -6,18 +6,25 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import ReactorKit
 
 protocol FeedCellDelegate: class {
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post)
-    func cell(_ cell: FeedCell, didLike post: Post)
     func cell(_ cell: FeedCell, wantsToShowProfileFor uid: String)
 }
 
 class FeedCell: UICollectionViewCell {
     
-    var viewModel: PostViewModel? {
-        didSet { configure() }
+    var reactor: FeedCellReactor? {
+        didSet {
+            guard let reactor = reactor else { return }
+            bind(reactor: reactor)
+        }
     }
+    
+    private let disposeBag = DisposeBag()
     
     weak var delegate: FeedCellDelegate?
     
@@ -52,11 +59,10 @@ class FeedCell: UICollectionViewCell {
         return iv
     }()
     
-    lazy var likeButton: UIButton = {
+    private lazy var likeButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage( UIImage(named: "like_unselected") , for: .normal)
         button.tintColor = .black
-        button.addTarget(self, action: #selector(didTapLike), for: .touchUpInside)
         return button
     }()
     
@@ -105,7 +111,6 @@ class FeedCell: UICollectionViewCell {
         profileImageView.setDimensions(height: 40, width: 40)
         profileImageView.layer.cornerRadius = 40 / 2
         
-        
         addSubview(usernameButton)
         usernameButton.centerY(inView: profileImageView,leftAnchor: profileImageView.rightAnchor, paddingLeft: 8)
         
@@ -117,13 +122,13 @@ class FeedCell: UICollectionViewCell {
         configureActionButton()
         
         addSubview(likesLabel)
-        likesLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, paddingTop: -4, paddingLeft: 8)
+        likesLabel.anchor(top: likeButton.bottomAnchor, left: leftAnchor, paddingTop: -4, paddingLeft: 12)
         
         addSubview(captionLabel)
-        captionLabel.anchor(top: likesLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
+        captionLabel.anchor(top: likesLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 12)
         
         addSubview(postTimeLabel)
-        postTimeLabel.anchor(top: captionLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 8)
+        postTimeLabel.anchor(top: captionLabel.bottomAnchor, left: leftAnchor, paddingTop: 8, paddingLeft: 12)
     }
     
     required init?(coder: NSCoder) {
@@ -131,29 +136,13 @@ class FeedCell: UICollectionViewCell {
     }
     
     @objc func showUserProfile() {
-        guard let viewModel = viewModel else { return }
-        delegate?.cell(self, wantsToShowProfileFor: viewModel.post.ownerUid)
+        guard let reactor = reactor else { return }
+        delegate?.cell(self, wantsToShowProfileFor: reactor.currentState.post.ownerUid)
     }
     
     @objc func didTapComments() {
-        guard let viewModel = viewModel else { return }
-        delegate?.cell(self, wantsToShowCommentsFor: viewModel.post)
-    }
-    
-    @objc func didTapLike() {
-        guard let viewModel = viewModel else { return }
-        delegate?.cell(self, didLike: viewModel.post)
-    }
-    
-    func configure() {
-        guard let viewModel = viewModel else { return }
-        captionLabel.text = viewModel.caption
-        postImageView.sd_setImage(with: viewModel.imageUrl)
-        profileImageView.sd_setImage(with: viewModel.userProfileImageUrl)
-        usernameButton.setTitle(viewModel.username, for: .normal)
-        likesLabel.text = viewModel.likesLabelText
-        likeButton.tintColor = viewModel.likeButtonTintColor
-        likeButton.setImage(viewModel.likeButtonImage, for: .normal)
+        guard let reactor = reactor else { return }
+        delegate?.cell(self, wantsToShowCommentsFor: reactor.currentState.post)
     }
     
     func configureActionButton() {
@@ -162,7 +151,49 @@ class FeedCell: UICollectionViewCell {
         stackView.distribution = .fillEqually
         
         addSubview(stackView)
-        stackView.anchor(top: postImageView.bottomAnchor, width: 120, height: 50)
+        stackView.anchor(top: postImageView.bottomAnchor, left: leftAnchor, paddingLeft: 4, width: 120, height: 50)
     }
     
+    private func bind(reactor: FeedCellReactor) {
+        // Input
+        likeButton.rx.tap
+            .map { FeedCellReactor.Action.likeButtonTapped }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        // Output
+        reactor.state.map { $0.post.imageUrl }
+            .compactMap { URL(string: $0) }
+            .subscribe(onNext: { [weak self] url in
+                self?.postImageView.sd_setImage(with: url)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.post.ownerImageUrl }
+            .compactMap { URL(string: $0) }
+            .subscribe(onNext: { [weak self] url in
+                self?.profileImageView.sd_setImage(with: url)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.post.ownerUsername }
+            .bind(to: usernameButton.rx.title(for: .normal))
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.post.caption }
+            .bind(to: captionLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { "좋아요 \($0.likesCount) 개" }
+            .bind(to: likesLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.isLiked }
+            .subscribe(onNext: { [weak self] isLiked in
+                let imageName = isLiked ? "like_selected" : "like_unselected"
+                self?.likeButton.setImage(UIImage(named: imageName), for: .normal)
+                self?.likeButton.tintColor = isLiked ? .red : .black
+            })
+            .disposed(by: disposeBag)
+    }
 }

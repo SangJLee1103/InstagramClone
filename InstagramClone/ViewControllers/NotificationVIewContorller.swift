@@ -112,11 +112,11 @@ extension NotificationViewContorller: NotificationCellDelegate {
     func cell(_ cell: NotificationCell, wantsToViewPost postId: String) {
         showLoader(true)
         
-        PostService.fetchPost(withPostId: postId) { post in
-            self.showLoader(false)
-            let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
-            controller.post = post
-            self.navigationController?.pushViewController(controller, animated: true)
-        }
+//        PostService.fetchPost(withPostId: postId) { post in
+//            self.showLoader(false)
+//            let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
+//            controller.post = post
+//            self.navigationController?.pushViewController(controller, animated: true)
+//        }
     }
 }

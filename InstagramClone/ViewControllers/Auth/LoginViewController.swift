@@ -123,7 +123,6 @@ final class LoginViewController: UIViewController {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        
         // Output
         reactor.state
             .map { $0.isLoginEnabled }
