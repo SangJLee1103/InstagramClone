@@ -9,7 +9,6 @@ import Foundation
 import Firebase
 
 enum AuthError: Error {
-    case unknown
     case invalidEmail
     case emailAlreadyInUse
     case weakPassword
@@ -17,6 +16,9 @@ enum AuthError: Error {
     case userNotFound
     case networkError
     case userDisabled
+    case userTokenExpired
+    case missingAppToken
+    case unknown
     
     // 에러 메시지를 한글로 반환하는 메서드
     var errorMessage: String {
@@ -33,6 +35,10 @@ enum AuthError: Error {
             return "네트워크 연결에 실패 하였습니다."
         case .userDisabled:
             return "해당 계정은 비활성화되어 있습니다."
+        case .userTokenExpired:
+            return "로그인이 만료되었습니다. 다시 로그인해주세요."
+        case .missingAppToken:
+            return "인증 정보가 없습니다. 다시 로그인해주세요."
         case .unknown:
             return "로그인에 실패 하였습니다."
         }
@@ -54,6 +60,10 @@ enum AuthError: Error {
                 return .networkError
             case .userDisabled:
                 return .userDisabled
+            case .userTokenExpired:
+                return .userTokenExpired
+            case .missingAppToken:
+                return .missingAppToken
             default:
                 return .unknown
             }
