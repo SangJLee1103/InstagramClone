@@ -68,26 +68,60 @@ struct PostService {
         }
     }
     
-    static func likePost(post: Post, completion: @escaping(FirestoreCompletion)) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        
-        COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes + 1])
-        
-        COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).setData([:]) { _ in
-            COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId)
-                .setData([:], completion: completion)
+    static func likePost(post: Post) -> Observable<Result<Void, AuthError>> {
+        return .create { observer in
+            guard let uid = Auth.auth().currentUser?.uid else {
+                observer.onNext(.failure(.missingAppToken))
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes + 1])
+            
+            COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).setData([:]) { _ in
+                COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId)
+                    .setData([:]) { error in
+                        if let error = error {
+                            let authError = AuthError.from(error)
+                            observer.onNext(.failure(authError))
+                        } else {
+                            observer.onNext(.success(()))
+                        }
+                        observer.onCompleted()
+                    }
+            }
+            return Disposables.create()
         }
     }
     
-    static func unlikePost(post: Post, completion: @escaping(FirestoreCompletion)) {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        guard post.likes > 0 else { return }
-        
-        COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes - 1])
-        
-        COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).delete { _ in
-            COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId)
-                .delete(completion: completion)
+    static func unlikePost(post: Post) -> Observable<Result<Void, AuthError>> {
+        return .create { observer in
+            guard let uid = Auth.auth().currentUser?.uid else {
+                observer.onNext(.failure(.missingAppToken))
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            guard post.likes > 0 else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_POSTS.document(post.postId).updateData(["likes": post.likes - 1])
+            
+            COLLECTION_POSTS.document(post.postId).collection("post-likes").document(uid).delete { _ in
+                COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId)
+                    .delete { error in
+                        if let error = error {
+                            let authError = AuthError.from(error)
+                            observer.onNext(.failure(authError))
+                        } else {
+                            observer.onNext(.success(()))
+                        }
+                        observer.onCompleted()
+                    }
+            }
+            return Disposables.create()
         }
     }
     

@@ -13,7 +13,7 @@ import ReactorKit
 
 private let reuseIdentifier = "Cell"
 
-class FeedViewController: UICollectionViewController {
+final class FeedViewController: UICollectionViewController {
     
     private let reactor = FeedReactor()
     private let disposeBag = DisposeBag()
@@ -42,12 +42,11 @@ class FeedViewController: UICollectionViewController {
     }
     
     private func configureUI() {
-        collectionView.backgroundColor = .white
-        
-        collectionView.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
-        
         navigationItem.title = "피드"
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+        
+        collectionView.backgroundColor = .white
+        collectionView.register(FeedCell.self, forCellWithReuseIdentifier: reuseIdentifier)
         
         let refresher = UIRefreshControl()
         collectionView.refreshControl = refresher
@@ -64,7 +63,6 @@ class FeedViewController: UICollectionViewController {
         reactor.action.onNext(.fetchPosts)
         
         reactor.state.map { $0.posts }
-            .distinctUntilChanged()
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
             .bind { owner, posts in
@@ -81,7 +79,6 @@ class FeedViewController: UICollectionViewController {
                 owner.reactor.action.onNext(.checkIfUserLikedPosts)
             })
             .disposed(by: disposeBag)
-        
     }
 }
 
@@ -96,11 +93,10 @@ extension FeedViewController {
         cell.delegate = self
         
         let post = reactor.currentState.posts[indexPath.row]
-        cell.viewModel = PostViewModel(post: post)
+        cell.reactor = FeedCellReactor(post: post)
         return cell
     }
 }
-
 
 // MARK: 컬렉션뷰 FlowLayout
 extension FeedViewController: UICollectionViewDelegateFlowLayout {
@@ -126,28 +122,4 @@ extension FeedViewController: FeedCellDelegate {
         let controller = CommentViewController(post: post)
         navigationController?.pushViewController(controller, animated: true)
     }
-    
-    func cell(_ cell: FeedCell, didLike post: Post) {
-        guard let tab = tabBarController as? MainTabViewController else { return }
-        guard let user = tab.user else { return }
-        
-        cell.viewModel?.post.didLike.toggle()
-        
-        if post.didLike {
-            PostService.unlikePost(post: post) { _ in
-                cell.likeButton.setImage(UIImage(named: "like_unselected"), for: .normal)
-                cell.likeButton.tintColor = .black
-                cell.viewModel?.post.likes = post.likes - 1
-            }
-        } else {
-            PostService.likePost(post: post) { _ in
-                cell.likeButton.setImage(UIImage(named: "like_selected"), for: .normal)
-                cell.likeButton.tintColor = .red
-                cell.viewModel?.post.likes = post.likes + 1
-                
-                NotificationService.uploadNotification(toUid: post.ownerUid, fromUser: user, type: .like, post: post)
-            }
-        }
-    }
-    
 }

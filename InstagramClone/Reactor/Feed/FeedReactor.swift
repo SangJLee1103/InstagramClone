@@ -53,7 +53,6 @@ final class FeedReactor: Reactor {
                 newstate.posts[index].didLike = didLike
             }
         }
-        
         return newstate
     }
     
