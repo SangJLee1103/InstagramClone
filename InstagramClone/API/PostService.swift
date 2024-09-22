@@ -68,7 +68,7 @@ struct PostService {
         }
     }
     
-    static func likePost(post: Post) -> Observable<Result<Void, AuthError>> {
+    static func likePost(post: Post) -> Observable<Result<Void, FirebaseError>> {
         return .create { observer in
             guard let uid = Auth.auth().currentUser?.uid else {
                 observer.onNext(.failure(.missingAppToken))
@@ -82,8 +82,8 @@ struct PostService {
                 COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId)
                     .setData([:]) { error in
                         if let error = error {
-                            let authError = AuthError.from(error)
-                            observer.onNext(.failure(authError))
+                            let error = FirebaseError.from(error)
+                            observer.onNext(.failure(error))
                         } else {
                             observer.onNext(.success(()))
                         }
@@ -94,7 +94,7 @@ struct PostService {
         }
     }
     
-    static func unlikePost(post: Post) -> Observable<Result<Void, AuthError>> {
+    static func unlikePost(post: Post) -> Observable<Result<Void, FirebaseError>> {
         return .create { observer in
             guard let uid = Auth.auth().currentUser?.uid else {
                 observer.onNext(.failure(.missingAppToken))
@@ -113,8 +113,8 @@ struct PostService {
                 COLLECTION_USERS.document(uid).collection("user-likes").document(post.postId)
                     .delete { error in
                         if let error = error {
-                            let authError = AuthError.from(error)
-                            observer.onNext(.failure(authError))
+                            let error = FirebaseError.from(error)
+                            observer.onNext(.failure(error))
                         } else {
                             observer.onNext(.success(()))
                         }
