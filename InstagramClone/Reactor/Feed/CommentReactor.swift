@@ -16,17 +16,20 @@ final class CommentReactor: Reactor {
     enum Action {
         case fetchComments
         case uploadComment(String)
+        case setError(String?)
     }
     
     enum Mutation {
         case setComments([Comment])
         case appendComment(Comment)
         case setLoading(Bool)
+        case setError(String?)
     }
     
     struct State {
         var comments = [Comment]()
         var isLoading: Bool = false
+        var errorMessage: String?
     }
     
     let initialState = State()
@@ -39,40 +42,39 @@ final class CommentReactor: Reactor {
     func mutate(action: Action) -> Observable<Mutation> {
         switch action {
         case .fetchComments:
-            return fetchComments(postId: post.postId).map { Mutation.setComments($0) }
+            return fetchComments(postId: post.postId)
+                .map { Mutation.setComments($0) }
+            
         case .uploadComment(let commentText):
-            return Observable.concat([
-                Observable.just(Mutation.setLoading(true)),
-                uploadComment(comment: commentText).map { result in
-                    switch result {
-                    case .success(let comment):
-                        return Mutation.appendComment(comment)
-                    case .failure(let error):
-                        print("Uploaded Failed: \(error.localizedDescription)")
-                        return Mutation.setLoading(false)
-                    }
-                },
-                Observable.just(Mutation.setLoading(false))
-            ])
+            return handleLoading(uploadCommentAndNotify(commentText: commentText))
+            
+        case .setError(let errorMessage):
+            return Observable.just(.setError(errorMessage))
         }
     }
     
     func reduce(state: State, mutation: Mutation) -> State {
-        var newstate = state
+        var newState = state
         
         switch mutation {
         case .setComments(let comments):
-            newstate.comments = comments
+            newState.comments = comments
         case .appendComment(let comment):
-            newstate.comments.append(comment)
+            newState.comments.append(comment)
         case .setLoading(let isLoading):
-            newstate.isLoading = isLoading
+            newState.isLoading = isLoading
+        case .setError(let error):
+            newState.errorMessage = error
         }
-        return newstate
+        
+        return newState
     }
     
-    private func fetchComments(postId: String) -> Observable<[Comment]> {
-        return CommentService.fetchComments(forPost: postId)
+    private func uploadCommentAndNotify(commentText: String) -> Observable<Mutation> {
+        return uploadComment(comment: commentText)
+            .flatMap { result in
+                self.handleUploadResult(result)
+            }
     }
     
     private func uploadComment(comment: String) -> Observable<Result<Comment, FirebaseError>> {
@@ -80,7 +82,7 @@ final class CommentReactor: Reactor {
             return Observable.just(.failure(.missingAppToken))
         }
         
-        return CommentService.uploadComment(comment: comment, postID: post.postId, user: currentUser).flatMap { result -> Observable<Result<Comment, FirebaseError>> in
+        return CommentService.uploadComment(comment: comment, postID: post.postId, user: currentUser).map { result in
             switch result {
             case .success:
                 let commentData: [String: Any] = [
@@ -91,10 +93,46 @@ final class CommentReactor: Reactor {
                     "comment": comment
                 ]
                 let newComment = Comment(dictionary: commentData)
-                return Observable.just(.success((newComment)))
+                return .success(newComment)
             case .failure(let error):
-                return Observable.just(.failure(error))
+                return .failure(error)
             }
         }
+    }
+    
+    private func handleUploadResult(_ result: Result<Comment, FirebaseError>) -> Observable<Mutation> {
+        switch result {
+        case .success(let comment):
+            return uploadNotification(comment: comment)
+                .flatMap { notificationResult in
+                    switch notificationResult {
+                    case .success:
+                        return Observable.just(Mutation.appendComment(comment))
+                    case .failure(let error):
+                        return Observable.just(Mutation.setError(error.localizedDescription))
+                    }
+                }
+        case .failure(let error):
+            return Observable.just(Mutation.setError(error.localizedDescription))
+        }
+    }
+    
+    private func fetchComments(postId: String) -> Observable<[Comment]> {
+        return CommentService.fetchComments(forPost: postId)
+    }
+    
+    private func handleLoading(_ action: Observable<Mutation>) -> Observable<Mutation> {
+        return Observable.concat([
+            Observable.just(Mutation.setLoading(true)),
+            action,
+            Observable.just(Mutation.setLoading(false))
+        ])
+    }
+    
+    private func uploadNotification(comment: Comment) -> Observable<Result<Void, FirebaseError>> {
+        guard let currentUser = UserManager.shared.currentUser else {
+            return Observable.just(.failure(.missingAppToken))
+        }
+        return NotificationService.uploadNotificationRx(toUid: post.ownerUid, fromUser: currentUser, type: .comment)
     }
 }

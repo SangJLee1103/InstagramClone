@@ -37,6 +37,7 @@ struct CommentService {
                 }
                 observer.onCompleted()
             }
+            return Disposables.create()
         }
     }
     
