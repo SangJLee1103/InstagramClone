@@ -57,13 +57,6 @@ final class CommentViewController: UICollectionViewController {
         self.tabBarController?.tabBar.isHidden = false
     }
     
-    //    func fetchComments() {
-    //        CommentService.fetchComments(forPost: post.postId) { comments in
-    //            self.comments = comments
-    //            self.collectionView.reloadData()
-    //        }
-    //    }
-    
     func configureCollectionView() {
         navigationItem.title = "댓글"
         
@@ -79,8 +72,10 @@ final class CommentViewController: UICollectionViewController {
         
         /// Output
         reactor.state.map { $0.comments }
-            .bind(to: collectionView.rx.items(cellIdentifier: reuseIdentifier, cellType: CommentCell.self)) { index, comment, cell in
-                cell.configure(with: comment)
+            .withUnretained(self)
+            .observe(on: MainScheduler.instance)
+            .bind { owner, comments in
+                owner.collectionView.reloadData()
             }
             .disposed(by: disposeBag)
         
@@ -113,19 +108,18 @@ extension CommentViewController {
         return reactor.currentState.comments.count
     }
     
-//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CommentCell
-//        let comment = reactor.currentState.comments[indexPath.row]
-//        cell.configure(with: comment)
-//        return cell
-//    }
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CommentCell
+        let comment = reactor.currentState.comments[indexPath.row]
+        cell.configure(with: comment)
+        return cell
+    }
 }
 
 // MARK: - UICOllectionViewDelegate
 extension CommentViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let uid = reactor.currentState.comments[indexPath.row].uid
-        //        let uid = comments[indexPath.row].uid
         UserService.fetchUser(withUid: uid) { user in
             let controller = ProfileViewController(user: user)
             self.navigationController?.pushViewController(controller, animated: true)
@@ -137,17 +131,17 @@ extension CommentViewController {
 extension CommentViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let comment = reactor.currentState.comments[indexPath.row]
-        let height = estimateHeightForComment(comment.commentText, width: view.frame.width) + 32
+        let height = estimateHeightForComment(comment.commentText, width: view.frame.width).height + 32
         return CGSize(width: view.frame.width, height: height)
     }
     
-    private func estimateHeightForComment(_ text: String, width: CGFloat) -> CGFloat {
+    private func estimateHeightForComment(_ text: String, width: CGFloat) -> CGSize {
         let label = UILabel()
         label.numberOfLines = 0
         label.text = text
         label.lineBreakMode = .byWordWrapping
         label.setWidth(width)
-        return label.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+        return label.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
     }
 }
 
@@ -157,16 +151,5 @@ extension CommentViewController: CommentInputAccesoryViewDelegate {
     func inputView(_ inputView: CommentInputAccesoryView, wantsToUploadComment comment: String) {
         inputView.clearCommentTextView()
         reactor.action.onNext(.uploadComment(comment))
-        //        guard let tab = self.tabBarController as? MainTabViewController else { return }
-        //        guard let currentUser = UserManager.shared.currentUser else { return }
-        //
-        //        self.showLoader(true)
-        //
-        //        CommentService.uploadComment(comment: comment, postID: post.postId, user: currentUser) { [self] error in
-        //            self.showLoader(false)
-        //            inputView.clearCommentTextView()
-        //
-        //            NotificationService.uploadNotification(toUid: self.post.ownerUid, fromUser: currentUser, type: .comment, post: self.post)
-        //        }
     }
 }
