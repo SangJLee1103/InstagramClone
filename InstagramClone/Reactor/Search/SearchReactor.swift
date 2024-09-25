@@ -17,7 +17,7 @@ final class SearchReactor: Reactor {
     
     enum Mutation {
         case setUsers([User])
-        case setFilteredUsers([User])
+        case setFilteredUsers([User], Bool)
     }
     
     struct State {
@@ -33,11 +33,15 @@ final class SearchReactor: Reactor {
         case .fetchUsers:
             return fetchUsers().map { Mutation.setUsers($0) }
         case .search(let query):
-            let filteredUsers = currentState.users.filter {
-                $0.username.lowercased().contains(query.lowercased()) ||
-                $0.fullname.lowercased().contains(query.lowercased())
+            if query.isEmpty {
+                return Observable.just(Mutation.setFilteredUsers([], false))
+            } else {
+                let filteredUsers = currentState.users.filter {
+                    $0.username.lowercased().contains(query.lowercased()) ||
+                    $0.fullname.lowercased().contains(query.lowercased())
+                }
+                return Observable.just(Mutation.setFilteredUsers(filteredUsers, true))
             }
-            return Observable.just(Mutation.setFilteredUsers(filteredUsers))
         }
     }
     
@@ -46,9 +50,9 @@ final class SearchReactor: Reactor {
         switch mutation {
         case .setUsers(let users):
             newState.users = users
-        case .setFilteredUsers(let filteredUsers):
+        case .setFilteredUsers(let filteredUsers, let isSearchMode):
             newState.filteredUsers = filteredUsers
-            newState.isSearchMode = !filteredUsers.isEmpty
+            newState.isSearchMode = isSearchMode
         }
         return newState
     }
