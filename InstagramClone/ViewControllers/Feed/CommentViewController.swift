@@ -72,6 +72,7 @@ final class CommentViewController: UICollectionViewController {
         
         /// Output
         reactor.state.map { $0.comments }
+            .distinctUntilChanged()
             .withUnretained(self)
             .observe(on: MainScheduler.instance)
             .bind { owner, comments in
