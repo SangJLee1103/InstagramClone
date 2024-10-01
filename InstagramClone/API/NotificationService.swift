@@ -40,8 +40,10 @@ struct NotificationService {
             
             docRef.setData(data) { error in
                 if let error = error {
+                    print("noti 에러: \(error)")
                     observer.onNext(.failure(.from(error)))
                 } else {
+                    print("noti 성공")
                     observer.onNext(.success(()))
                 }
                 observer.onCompleted()

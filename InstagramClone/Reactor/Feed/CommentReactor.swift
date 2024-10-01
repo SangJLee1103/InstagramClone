@@ -43,10 +43,16 @@ final class CommentReactor: Reactor {
         switch action {
         case .fetchComments:
             return fetchComments(postId: post.postId)
-                .map { Mutation.setComments($0) }
+                .map { fetchedComments in
+                    let allComments = self.currentState.comments + fetchedComments
+                    return Mutation.setComments(allComments)
+                }
             
         case .uploadComment(let commentText):
-            return handleLoading(uploadCommentAndNotify(commentText: commentText))
+            return Observable.concat([
+                Observable.just(Mutation.setLoading(true)),
+                uploadCommentAndNotify(commentText: commentText),
+            ])
             
         case .setError(let errorMessage):
             return Observable.just(.setError(errorMessage))
@@ -72,8 +78,12 @@ final class CommentReactor: Reactor {
     
     private func uploadCommentAndNotify(commentText: String) -> Observable<Mutation> {
         return uploadComment(comment: commentText)
-            .flatMap { result in
-                self.handleUploadResult(result)
+            .flatMap { result -> Observable<Mutation> in
+                return self.handleUploadResult(result)
+            }
+            .catch { error in
+                print(error.localizedDescription)
+                return Observable.just(Mutation.setError(error.localizedDescription))
             }
     }
     
@@ -107,32 +117,51 @@ final class CommentReactor: Reactor {
                 .flatMap { notificationResult in
                     switch notificationResult {
                     case .success:
-                        return Observable.just(Mutation.appendComment(comment))
+                        return self.fetchComments(postId: self.post.postId)
+                            .flatMap { fetchedComments in
+                                return Observable.concat([
+                                    Observable.just(Mutation.setComments(fetchedComments)),
+                                    Observable.just(Mutation.setLoading(false))
+                                ])
+                            }
                     case .failure(let error):
-                        return Observable.just(Mutation.setError(error.localizedDescription))
+                        print("에러1: ", error.localizedDescription)
+                        return Observable.concat(
+                            Observable.just(Mutation.setError(error.localizedDescription)),
+                            Observable.just(Mutation.setLoading(false))
+                        )
                     }
                 }
+                .catch { error in
+                    print("에러2: ", error.localizedDescription)
+                    return Observable.concat(
+                        Observable.just(Mutation.setError(error.localizedDescription)),
+                        Observable.just(Mutation.setLoading(false))
+                    )
+                }
         case .failure(let error):
-            return Observable.just(Mutation.setError(error.localizedDescription))
+            print("에러3: ", error.localizedDescription)
+            return Observable.concat(
+                Observable.just(Mutation.setError(error.localizedDescription)),
+                Observable.just(Mutation.setLoading(false))
+            )
         }
     }
     
-    private func fetchComments(postId: String) -> Observable<[Comment]> {
-        return CommentService.fetchComments(forPost: postId)
-    }
-    
-    private func handleLoading(_ action: Observable<Mutation>) -> Observable<Mutation> {
-        return Observable.concat([
-            Observable.just(Mutation.setLoading(true)),
-            action,
-            Observable.just(Mutation.setLoading(false))
-        ])
-    }
     
     private func uploadNotification(comment: Comment) -> Observable<Result<Void, FirebaseError>> {
         guard let currentUser = UserManager.shared.currentUser else {
             return Observable.just(.failure(.missingAppToken))
         }
-        return NotificationService.uploadNotificationRx(toUid: post.ownerUid, fromUser: currentUser, type: .comment)
+        
+        return NotificationService.uploadNotificationRx(
+            toUid: post.ownerUid,
+            fromUser: currentUser,
+            type: .comment
+        )
+    }
+    
+    private func fetchComments(postId: String) -> Observable<[Comment]> {
+        return CommentService.fetchComments(forPost: postId)
     }
 }
