@@ -113,41 +113,27 @@ final class CommentReactor: Reactor {
     private func handleUploadResult(_ result: Result<Comment, FirebaseError>) -> Observable<Mutation> {
         switch result {
         case .success(let comment):
+            // 성공적으로 업로드된 경우, 새로운 댓글을 기존 state에 append
             return uploadNotification(comment: comment)
                 .flatMap { notificationResult in
                     switch notificationResult {
                     case .success:
-                        return self.fetchComments(postId: self.post.postId)
-                            .flatMap { fetchedComments in
-                                return Observable.concat([
-                                    Observable.just(Mutation.setComments(fetchedComments)),
-                                    Observable.just(Mutation.setLoading(false))
-                                ])
-                            }
+                        // fetchComments 대신에 현재 상태에 새로운 댓글을 추가
+                        return Observable.just(Mutation.appendComment(comment))
                     case .failure(let error):
                         print("에러1: ", error.localizedDescription)
-                        return Observable.concat(
-                            Observable.just(Mutation.setError(error.localizedDescription)),
-                            Observable.just(Mutation.setLoading(false))
-                        )
+                        return Observable.just(Mutation.setError(error.localizedDescription))
                     }
                 }
                 .catch { error in
                     print("에러2: ", error.localizedDescription)
-                    return Observable.concat(
-                        Observable.just(Mutation.setError(error.localizedDescription)),
-                        Observable.just(Mutation.setLoading(false))
-                    )
+                    return Observable.just(Mutation.setError(error.localizedDescription))
                 }
         case .failure(let error):
             print("에러3: ", error.localizedDescription)
-            return Observable.concat(
-                Observable.just(Mutation.setError(error.localizedDescription)),
-                Observable.just(Mutation.setLoading(false))
-            )
+            return Observable.just(Mutation.setError(error.localizedDescription))
         }
     }
-    
     
     private func uploadNotification(comment: Comment) -> Observable<Result<Void, FirebaseError>> {
         guard let currentUser = UserManager.shared.currentUser else {
