@@ -11,14 +11,6 @@ import YPImagePicker
 
 class MainTabViewController: UITabBarController {
     
-    // MARK: - Lifecycle
-    var user: User? {
-        didSet {
-            guard let user = user else { return }
-            configureViewControllers(withUser: user)
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         checkUserIsLoggedIn()
@@ -27,9 +19,9 @@ class MainTabViewController: UITabBarController {
     
     // MARK: - API
     func fetchUser() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        UserService.fetchUser(withUid: uid) { user in
-            self.user = user
+        UserManager.shared.fetchCurrentUser { user in
+            guard let user = user else { return }
+            self.configureViewControllers(withUser: user)
         }
     }
     
@@ -82,7 +74,7 @@ class MainTabViewController: UITabBarController {
                 let controller = UploadPostViewController()
                 controller.selectedImage = selectedImage
                 controller.delegate = self
-                controller.currentUser = self.user
+                controller.currentUser = UserManager.shared.currentUser
                 let nav = UINavigationController(rootViewController: controller)
                 nav.modalPresentationStyle = .fullScreen
                 self.present(nav, animated: true)
