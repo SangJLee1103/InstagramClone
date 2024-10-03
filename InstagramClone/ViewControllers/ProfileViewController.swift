@@ -122,7 +122,7 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 extension ProfileViewController: ProfileHeaderDelegate {
     func header(_ profileHeader: ProfileHeader, didTapActionButtonFor user: User) {
         guard let tab = tabBarController as? MainTabViewController else { return }
-        guard let currentUser = tab.user else { return }
+        guard let currentUser = UserManager.shared.currentUser else { return }
         
         if user.isCurrentUser {
             

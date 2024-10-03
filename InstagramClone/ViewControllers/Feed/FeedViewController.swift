@@ -119,7 +119,7 @@ extension FeedViewController: FeedCellDelegate {
     }
     
     func cell(_ cell: FeedCell, wantsToShowCommentsFor post: Post) {
-        let controller = CommentViewController(post: post)
+        let controller = CommentViewController(reactor: CommentReactor(post: post))
         navigationController?.pushViewController(controller, animated: true)
     }
 }

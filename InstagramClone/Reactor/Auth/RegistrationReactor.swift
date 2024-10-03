@@ -107,7 +107,7 @@ final class RegistrationReactor: Reactor {
                 return Mutation.signupCompleted
             }
             .catch { error in
-                let authError = AuthError.from(error)
+                let authError = FirebaseError.from(error)
                 let errorMessage = authError.errorMessage
                 print("DEBUG: Error registering user: \(error.localizedDescription)")
                 return Observable.just(Mutation.setError(errorMessage))

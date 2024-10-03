@@ -7,11 +7,7 @@
 
 import UIKit
 
-class CommentCell: UICollectionViewCell {
-    
-    var viewModel: CommentViewModel? {
-        didSet { configure() }
-    }
+final class CommentCell: UICollectionViewCell {
     
     private let profileImageView: UIImageView = {
         let iv = UIImageView()
@@ -40,10 +36,14 @@ class CommentCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
-        guard let viewModel = viewModel else { return }
-        
-        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
-        commentLabel.attributedText = viewModel.commentLabelText()
+    func configure(with comment: Comment) {
+        profileImageView.sd_setImage(with: URL(string: comment.profileImageUrl))
+        commentLabel.attributedText = createCommentLabelText(for: comment)
+    }
+    
+    private func createCommentLabelText(for comment: Comment) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString(string: "\(comment.username) ", attributes: [ .font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedString.append(NSAttributedString(string: comment.commentText, attributes: [.font: UIFont.systemFont(ofSize: 14)]))
+        return attributedString
     }
 }

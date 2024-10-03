@@ -6,8 +6,9 @@
 //
 
 import Firebase
+import FirebaseFirestore
 
-struct Comment {
+struct Comment: Equatable {
     let uid: String
     let username: String
     let profileImageUrl: String

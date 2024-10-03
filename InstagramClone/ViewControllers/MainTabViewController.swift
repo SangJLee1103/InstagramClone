@@ -11,14 +11,6 @@ import YPImagePicker
 
 class MainTabViewController: UITabBarController {
     
-    // MARK: - Lifecycle
-    var user: User? {
-        didSet {
-            guard let user = user else { return }
-            configureViewControllers(withUser: user)
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         checkUserIsLoggedIn()
@@ -27,9 +19,9 @@ class MainTabViewController: UITabBarController {
     
     // MARK: - API
     func fetchUser() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        UserService.fetchUser(withUid: uid) { user in
-            self.user = user
+        UserManager.shared.fetchCurrentUser { user in
+            guard let user = user else { return }
+            self.configureViewControllers(withUser: user)
         }
     }
     
@@ -52,7 +44,7 @@ class MainTabViewController: UITabBarController {
         let layout = UICollectionViewFlowLayout()
         let feed = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "home_unselected"), selectedImage: #imageLiteral(resourceName: "home_selected"), rootViewController: FeedViewController(collectionViewLayout: layout))
         
-        let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: SearchViewController())
+        let search = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "search_unselected"), selectedImage: #imageLiteral(resourceName: "search_selected"), rootViewController: SearchViewController(reactor: SearchReactor()))
         
         let imageSelector = templateNavigationController(unselectedImage: #imageLiteral(resourceName: "plus_unselected"), selectedImage: #imageLiteral(resourceName: "plus_unselected"), rootViewController: ImageSelectorViewController())
         
@@ -82,7 +74,7 @@ class MainTabViewController: UITabBarController {
                 let controller = UploadPostViewController()
                 controller.selectedImage = selectedImage
                 controller.delegate = self
-                controller.currentUser = self.user
+                controller.currentUser = UserManager.shared.currentUser
                 let nav = UINavigationController(rootViewController: controller)
                 nav.modalPresentationStyle = .fullScreen
                 self.present(nav, animated: true)

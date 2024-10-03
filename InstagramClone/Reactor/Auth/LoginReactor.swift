@@ -77,7 +77,7 @@ final class LoginReactor: Reactor {
                 return Mutation.loginCompleted
             }
             .catch { error in
-                let authError = AuthError.from(error)
+                let authError = FirebaseError.from(error)
                 let errorMessage = authError.errorMessage
                 print("DEBUG: Error Login user: \(error.localizedDescription)")
                 return Observable.just(Mutation.setError(errorMessage))
