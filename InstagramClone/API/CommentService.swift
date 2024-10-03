@@ -10,10 +10,9 @@ import FirebaseFirestore
 import RxSwift
 
 struct CommentService {
-    
     static func uploadComment(comment: String, postID: String, user: User) -> Observable<Result<Void, FirebaseError>> {
         return .create { observer in
-            guard let uid = Auth.auth().currentUser?.uid else {
+            guard (Auth.auth().currentUser?.uid) != nil else {
                 observer.onNext(.failure(.missingAppToken))
                 observer.onCompleted()
                 return Disposables.create()
