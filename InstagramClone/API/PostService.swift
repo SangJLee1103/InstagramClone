@@ -59,12 +59,27 @@ struct PostService {
         }
     }
     
-    static func fetchPost(withPostId postId: String, completion: @escaping(Post) -> Void) {
-        COLLECTION_POSTS.document(postId).getDocument { snapshot, _ in
-            guard let snapshot = snapshot else { return }
-            guard let data = snapshot.data() else { return }
-            let post = Post(postId: snapshot.documentID, dictionary: data)
-            completion(post)
+    static func fetchPost(withPostId postId: String) -> Observable<Post> {
+        return Observable.create { observer in
+            let document = COLLECTION_POSTS.document(postId)
+            
+            document.getDocument { snapshot, error in
+                if let error = error {
+                    observer.onError(error)
+                    return
+                }
+                
+                guard let snapshot = snapshot, let data = snapshot.data() else {
+                    observer.onError(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data not found."]))
+                    return
+                }
+                
+                let post = Post(postId: snapshot.documentID, dictionary: data)
+                observer.onNext(post)
+                observer.onCompleted()
+            }
+            
+            return Disposables.create()
         }
     }
     

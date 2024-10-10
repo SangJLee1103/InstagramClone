@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RxSwift
 
 protocol NotificationCellDelegate: class {
     func cell(_ cell: NotificationCell, wantsToFollow uid: String)
@@ -13,13 +14,17 @@ protocol NotificationCellDelegate: class {
     func cell(_ cell: NotificationCell, wantsToViewPost postId: String)
 }
 
-class NotificationCell: UITableViewCell {
+final class NotificationCell: UITableViewCell {
     
-    var viewModel: NotificationViewModel? {
-        didSet { configure() }
-    }
-    
+    let disposeBag = DisposeBag()
     weak var delegate: NotificationCellDelegate?
+    
+    var reactor: NotificationCellReactor? {
+        didSet {
+            guard let reactor = reactor else { return }
+            bind(reactor: reactor)
+        }
+    }
     
     private lazy var profileImageView: UIImageView = {
         let iv = UIImageView()
@@ -58,7 +63,7 @@ class NotificationCell: UITableViewCell {
         button.layer.borderWidth = 0.5
         button.titleLabel?.font = .boldSystemFont(ofSize: 14)
         button.setTitleColor(.black, for: .normal)
-        button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
+//        button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
         return button
     }()
     
@@ -90,32 +95,89 @@ class NotificationCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    @objc func handleFollowTapped() {
-        guard let viewModel = viewModel else { return }
-        if viewModel.notification.userIsFollwed {
-            delegate?.cell(self, wantsToUnfollow: viewModel.notification.uid)
-        } else {
-            delegate?.cell(self, wantsToFollow: viewModel.notification.uid)
+    private func bind(reactor: NotificationCellReactor) {
+        if let profileImageUrl = URL(string: reactor.currentState.notification.userProfileImageUrl) {
+            profileImageView.sd_setImage(with: profileImageUrl)
         }
+        
+        if let postImageUrl =  URL(string: reactor.currentState.notification.postImageUrl ?? "") {
+            postImageView.sd_setImage(with: postImageUrl)
+        }
+        
+        let username = reactor.currentState .notification.username
+        let message = reactor.currentState.notification.type.notificationMessage
+        let attributedText = NSMutableAttributedString(string: username, attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: message, attributes: [. font: UIFont.systemFont(ofSize: 14)]))
+        attributedText.append(NSAttributedString(string: "  2m", attributes: [.font: UIFont.systemFont(ofSize: 12), .foregroundColor: UIColor.lightGray]))
+        infoLabel.attributedText = attributedText
+        
+        reactor.state.map { $0.notification.type == .follow }
+            .withUnretained(self)
+            .subscribe(onNext: { owner, shouldHidePostImage in
+                owner.followButton.isHidden = !shouldHidePostImage
+                owner.postImageView.isHidden = shouldHidePostImage
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.notification.userIsFollwed }
+            .withUnretained(self)
+            .subscribe(onNext: { owner, isFollowed in
+                owner.followButton.setTitle(isFollowed ? "Following" : "Followed", for: .normal)
+                owner.followButton.backgroundColor = isFollowed ? .lightGray : .systemBlue
+                owner.followButton.setTitleColor(isFollowed ? .black : .white, for: .normal)
+            })
+            .disposed(by: disposeBag)
+        
+        followButton.rx.tap
+            .subscribe(onNext: { [weak self] in
+                guard let self = self else { return }
+                if self.reactor?.currentState.notification.userIsFollwed == true {
+                    delegate?.cell(self, wantsToFollow: reactor.currentState.notification.uid)
+                } else {
+                    delegate?.cell(self, wantsToUnfollow: reactor.currentState.notification.uid)
+                }
+            })
+            .disposed(by: disposeBag)
     }
     
+    
+//    @objc func handleFollowTapped() {
+//        guard let reactor = reactor else { return }
+//        let action: NotificationCellReactor.Action = reactor.currentState.isFollowed ? .followTapped : .followTapped
+//        reactor.action.onNext(action)
+//    }
+//    
     @objc func handlePostTapped() {
-        guard let postId = viewModel?.notification.postId else { return }
+        guard let postId = reactor?.currentState.notification.postId else { return }
         delegate?.cell(self, wantsToViewPost: postId)
     }
     
-    func configure() {
-        guard let viewModel = viewModel else { return }
-        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
-        postImageView.sd_setImage(with: viewModel.postImageUrl)
-        infoLabel.attributedText = viewModel.notificationMessage
-        
-        followButton.isHidden = !viewModel.shouldHidePostImage
-        postImageView.isHidden = viewModel.shouldHidePostImage
-        
-        followButton.setTitle(viewModel.followButtonText, for: .normal)
-        followButton.backgroundColor = viewModel.followButtonBackgroundColor
-        followButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
-    }
+    //    @objc func handleFollowTapped() {
+    //        guard let viewModel = viewModel else { return }
+    //        if viewModel.notification.userIsFollwed {
+    //            delegate?.cell(self, wantsToUnfollow: viewModel.notification.uid)
+    //        } else {
+    //            delegate?.cell(self, wantsToFollow: viewModel.notification.uid)
+    //        }
+    //    }
+    //
+    //    @objc func handlePostTapped() {
+    //        guard let postId = viewModel?.notification.postId else { return }
+    //        delegate?.cell(self, wantsToViewPost: postId)
+    //    }
+    //
+    //    func configure() {
+    //        guard let viewModel = viewModel else { return }
+    //        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+    //        postImageView.sd_setImage(with: viewModel.postImageUrl)
+    //        infoLabel.attributedText = viewModel.notificationMessage
+    //
+    //        followButton.isHidden = !viewModel.shouldHidePostImage
+    //        postImageView.isHidden = viewModel.shouldHidePostImage
+    //
+    //        followButton.setTitle(viewModel.followButtonText, for: .normal)
+    //        followButton.backgroundColor = viewModel.followButtonBackgroundColor
+    //        followButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
+    //    }
     
 }

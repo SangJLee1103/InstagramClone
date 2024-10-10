@@ -6,6 +6,7 @@
 //
 
 import Firebase
+import RxSwift
 
 typealias FirestoreCompletion = (Error?) -> Void
 
@@ -37,12 +38,66 @@ struct UserService {
         }
     }
     
+    static func followRx(uid: String) -> Observable<Void> {
+        return .create { observer in
+            guard let currentUid = Auth.auth().currentUser?.uid else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).setData([:]) { error in
+                if let error = error {
+                    observer.onError(error)
+                    return
+                }
+                
+                COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).setData([:]) { error in
+                    if let error = error {
+                        observer.onError(error)
+                    } else {
+                        observer.onNext(())
+                        observer.onCompleted()
+                    }
+                }
+            }
+            return Disposables.create()
+        }
+        
+    }
+    
     // 언팔로우
     static func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
         guard let currentUid = Auth.auth().currentUser?.uid else { return }
         
         COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).delete { error in
             COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).delete(completion: completion)
+        }
+    }
+    
+    static func unfollowRx(uid: String) -> Observable<Void> {
+        return .create { observer in
+            guard let currentUid = Auth.auth().currentUser?.uid else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).delete { error in
+                
+                if let error = error {
+                    observer.onError(error)
+                    return
+                }
+                
+                COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).delete() { error in
+                    if let error = error {
+                        observer.onError(error)
+                    } else {
+                        observer.onNext(())
+                        observer.onCompleted()
+                    }
+                }
+            }
+            return Disposables.create()
         }
     }
     
@@ -55,6 +110,28 @@ struct UserService {
             completion(isFollowed)
         }
     }
+    
+    static func checkIfUserIsFollowedRx() -> Observable<Bool> {
+        return .create { observer in
+            guard let currentUid = Auth.auth().currentUser?.uid else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(currentUid).getDocument { (snapshot, error) in
+                if let error = error {
+                    observer.onError(error) // 에러 발생 시 에러 방출
+                } else {
+                    let isFollowed = snapshot?.exists ?? false
+                    observer.onNext(isFollowed) // 결과 방출
+                }
+                observer.onCompleted() // 작업 완료 시 완료 방출
+            }
+            return Disposables.create()
+        }
+    }
+    
+    
     
     // 유저의 팔로우, 팔로잉, 포스팅 정보 가져오기
     static func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {

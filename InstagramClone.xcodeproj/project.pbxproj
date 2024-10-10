@@ -17,6 +17,8 @@
 		DEB0F8D42C9EA389008C913A /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEB0F8D32C9EA389008C913A /* UserManager.swift */; };
 		DEC75D282C95717400C122C3 /* FirebaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75D272C95717400C122C3 /* FirebaseError.swift */; };
 		DEC75D2C2C96997B00C122C3 /* LoginReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC75D2B2C96997B00C122C3 /* LoginReactor.swift */; };
+		DED478942CAFF1EF002CAF64 /* NotificationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED478932CAFF1EF002CAF64 /* NotificationReactor.swift */; };
+		DED478992CB523C1002CAF64 /* NotificationCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED478982CB523C1002CAF64 /* NotificationCellReactor.swift */; };
 		DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4BC682C944E7400025C18 /* RegistrationReactor.swift */; };
 		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
 		F405C5292929E4AB00100735 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5282929E4AB00100735 /* Notification.swift */; };
@@ -74,6 +76,8 @@
 		DEB0F8D32C9EA389008C913A /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		DEC75D272C95717400C122C3 /* FirebaseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseError.swift; sourceTree = "<group>"; };
 		DEC75D2B2C96997B00C122C3 /* LoginReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginReactor.swift; sourceTree = "<group>"; };
+		DED478932CAFF1EF002CAF64 /* NotificationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationReactor.swift; sourceTree = "<group>"; };
+		DED478982CB523C1002CAF64 /* NotificationCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCellReactor.swift; sourceTree = "<group>"; };
 		DED4BC682C944E7400025C18 /* RegistrationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationReactor.swift; sourceTree = "<group>"; };
 		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		F405C5282929E4AB00100735 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
@@ -184,12 +188,30 @@
 			path = Feed;
 			sourceTree = "<group>";
 		};
+		DED478922CAFF1D7002CAF64 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				DED478932CAFF1EF002CAF64 /* NotificationReactor.swift */,
+				DED478982CB523C1002CAF64 /* NotificationCellReactor.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		DED478952CAFF1FC002CAF64 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				F4B6DE99291D053E00A8FEA9 /* NotificationVIewContorller.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
 		DED4BC662C944E5600025C18 /* Reactor */ = {
 			isa = PBXGroup;
 			children = (
 				DED4BC672C944E6800025C18 /* Auth */,
 				DEB0F8CA2C97F247008C913A /* Feed */,
 				089DDFE82CA2B49300576308 /* Search */,
+				DED478922CAFF1D7002CAF64 /* Notification */,
 			);
 			path = Reactor;
 			sourceTree = "<group>";
@@ -275,8 +297,8 @@
 				F4B6DEA5291DE8B500A8FEA9 /* Auth */,
 				DEB0F8C92C97F22D008C913A /* Feed */,
 				089DDFE72CA2B47D00576308 /* Search */,
+				DED478952CAFF1FC002CAF64 /* Notification */,
 				F4B6DE97291D053000A8FEA9 /* ImageSelectorViewController.swift */,
-				F4B6DE99291D053E00A8FEA9 /* NotificationVIewContorller.swift */,
 				F4B6DE9B291D054800A8FEA9 /* ProfileViewController.swift */,
 				F429E6CF29239A0D0003103C /* UploadPostViewController.swift */,
 			);
@@ -479,6 +501,7 @@
 				F4D05CD92920C4EB000C1C97 /* ProfileHeaderViewModel.swift in Sources */,
 				DEB0F8D22C9E9C95008C913A /* CommentReactor.swift in Sources */,
 				F479D99429244B5C0059BA8B /* InputTextView.swift in Sources */,
+				DED478992CB523C1002CAF64 /* NotificationCellReactor.swift in Sources */,
 				F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */,
 				F4B6DE98291D053000A8FEA9 /* ImageSelectorViewController.swift in Sources */,
 				F4D05CDD2920F268000C1C97 /* UserCellViewModel.swift in Sources */,
@@ -497,6 +520,7 @@
 				DEC75D2C2C96997B00C122C3 /* LoginReactor.swift in Sources */,
 				F4D05CCE291F6696000C1C97 /* ProfileCell.swift in Sources */,
 				DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */,
+				DED478942CAFF1EF002CAF64 /* NotificationReactor.swift in Sources */,
 				F4B6DEA4291D20F600A8FEA9 /* Extensions.swift in Sources */,
 				F405C5272929DEE500100735 /* NotificationCell.swift in Sources */,
 				F4B6DE77291CFFFD00A8FEA9 /* SceneDelegate.swift in Sources */,
