@@ -23,7 +23,6 @@
 		F405C5272929DEE500100735 /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5262929DEE500100735 /* NotificationCell.swift */; };
 		F405C5292929E4AB00100735 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C5282929E4AB00100735 /* Notification.swift */; };
 		F405C52B2929E79100100735 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C52A2929E79100100735 /* NotificationService.swift */; };
-		F405C52D2929F7F800100735 /* NotificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F405C52C2929F7F800100735 /* NotificationViewModel.swift */; };
 		F429E6D029239A0D0003103C /* UploadPostViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F429E6CF29239A0D0003103C /* UploadPostViewController.swift */; };
 		F4409CE72924F182006923B3 /* PostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4409CE62924F182006923B3 /* PostViewModel.swift */; };
 		F460225A29266D5D000DE2D5 /* CommentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F460225929266D5D000DE2D5 /* CommentViewController.swift */; };
@@ -82,7 +81,6 @@
 		F405C5262929DEE500100735 /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		F405C5282929E4AB00100735 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		F405C52A2929E79100100735 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		F405C52C2929F7F800100735 /* NotificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewModel.swift; sourceTree = "<group>"; };
 		F429E6CF29239A0D0003103C /* UploadPostViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UploadPostViewController.swift; sourceTree = "<group>"; };
 		F4409CE62924F182006923B3 /* PostViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostViewModel.swift; sourceTree = "<group>"; };
 		F460225929266D5D000DE2D5 /* CommentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentViewController.swift; sourceTree = "<group>"; };
@@ -312,7 +310,6 @@
 				F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */,
 				F4409CE62924F182006923B3 /* PostViewModel.swift */,
 				F460226329275A37000DE2D5 /* CommentViewModel.swift */,
-				F405C52C2929F7F800100735 /* NotificationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -477,7 +474,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F460226429275A37000DE2D5 /* CommentViewModel.swift in Sources */,
-				F405C52D2929F7F800100735 /* NotificationViewModel.swift in Sources */,
 				F4409CE72924F182006923B3 /* PostViewModel.swift in Sources */,
 				F4D05CC4291DFCA3000C1C97 /* CustomTextField.swift in Sources */,
 				F4D05CD1291F66B4000C1C97 /* ProfileHeader.swift in Sources */,

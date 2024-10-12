@@ -15,14 +15,14 @@ final class NotificationReactor: Reactor {
         case checkIfUserIsFollowed(String)
         case follow(String)
         case unfollow(String)
-        case showPost(Post)
+        case fetchPostWithId(String)
         case refresh
     }
     
     enum Mutation {
         case setNotifications([Notification])
         case setFollowed(Bool, index: Int)
-        case setPost(Post)
+        case showPost(Post)
         case refresh([Notification])
         case setLoading(Bool)
         case setError(String?)
@@ -82,8 +82,13 @@ final class NotificationReactor: Reactor {
                 .catch { error in
                     return .just(Mutation.setError(error.localizedDescription))
                 }
-        case .showPost(let post):
-            return Observable.just(Mutation.setPost(post))
+        case .fetchPostWithId(let postId):
+            return PostService.fetchPost(withPostId: postId)
+                .map { Mutation.showPost($0) }
+                .catch { error in
+                    return .just(Mutation.setError(error.localizedDescription))
+                }
+            
         case .refresh:
             return Observable.concat([
                 Observable.just(Mutation.setLoading(true)),
@@ -100,7 +105,7 @@ final class NotificationReactor: Reactor {
             newState.notifications = notifications
         case .setFollowed(let isFollowed, let index):
             newState.notifications[index].userIsFollwed = isFollowed
-        case .setPost(let post):
+        case .showPost(let post):
             newState.selectedPost = post
         case .refresh(let notifications):
             newState.notifications = notifications

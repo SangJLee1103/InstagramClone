@@ -78,6 +78,16 @@ final class NotificationViewContorller: UITableViewController {
             }
             .disposed(by: disposeBag)
         
+        reactor.state.map { $0.selectedPost }
+            .compactMap { $0 }
+            .subscribe(onNext: { [weak self] post in
+                self?.showLoader(false)
+                let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
+                controller.post = post
+                self?.navigationController?.pushViewController(controller, animated: true)
+            })
+            .disposed(by: disposeBag)
+        
         tableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
                 self?.showLoader(true)
@@ -92,33 +102,6 @@ final class NotificationViewContorller: UITableViewController {
             .disposed(by: disposeBag)
     }
 }
-
-// MARK: UITableViewDataSource
-//extension NotificationViewContorller {
-//    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return notifications.count
-//    }
-//    
-//    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! NotificationCell
-//        cell.viewModel = NotificationViewModel(notification: notifications[indexPath.row])
-//        cell.delegate = self
-//        return cell
-//    }
-//}
-
-//extension NotificationViewContorller {
-//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        showLoader(true)
-//        
-//        UserService.fetchUser(withUid: notifications[indexPath.row].uid) { user in
-//            self.showLoader(false)
-//            
-//            let controller = ProfileViewController(user: user)
-//            self.navigationController?.pushViewController(controller, animated: true)
-//        }
-//    }
-//}
 
 extension NotificationViewContorller: NotificationCellDelegate {
     func cell(_ cell: NotificationCell, wantsToFollow uid: String) {
@@ -141,7 +124,7 @@ extension NotificationViewContorller: NotificationCellDelegate {
     
     func cell(_ cell: NotificationCell, wantsToViewPost postId: String) {
         showLoader(true)
-        
+        reactor.action.onNext(.fetchPostWithId(postId))
         //        PostService.fetchPost(withPostId: postId) { post in
         //            self.showLoader(false)
         //            let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
