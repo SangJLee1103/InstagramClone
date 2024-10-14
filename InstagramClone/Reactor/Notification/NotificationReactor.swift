@@ -84,11 +84,12 @@ final class NotificationReactor: Reactor {
                 }
         case .fetchPostWithId(let postId):
             return PostService.fetchPost(withPostId: postId)
-                .map { Mutation.showPost($0) }
+                .map {
+                    return Mutation.showPost($0)
+                }
                 .catch { error in
                     return .just(Mutation.setError(error.localizedDescription))
                 }
-            
         case .refresh:
             return Observable.concat([
                 Observable.just(Mutation.setLoading(true)),

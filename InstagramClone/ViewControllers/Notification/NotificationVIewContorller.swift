@@ -82,12 +82,14 @@ final class NotificationViewContorller: UITableViewController {
             .compactMap { $0 }
             .subscribe(onNext: { [weak self] post in
                 self?.showLoader(false)
-                let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
-                controller.post = post
+
+                let feedReactor = FeedReactor(initialPost: post)
+                let controller = FeedViewController(reactor: feedReactor, collectionViewLayout: UICollectionViewFlowLayout())
                 self?.navigationController?.pushViewController(controller, animated: true)
             })
             .disposed(by: disposeBag)
-        
+
+
         tableView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
                 self?.showLoader(true)
@@ -125,11 +127,5 @@ extension NotificationViewContorller: NotificationCellDelegate {
     func cell(_ cell: NotificationCell, wantsToViewPost postId: String) {
         showLoader(true)
         reactor.action.onNext(.fetchPostWithId(postId))
-        //        PostService.fetchPost(withPostId: postId) { post in
-        //            self.showLoader(false)
-        //            let controller = FeedViewController(collectionViewLayout: UICollectionViewFlowLayout())
-        //            controller.post = post
-        //            self.navigationController?.pushViewController(controller, animated: true)
-        //        }
     }
 }
