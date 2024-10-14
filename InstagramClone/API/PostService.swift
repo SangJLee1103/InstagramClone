@@ -23,7 +23,7 @@ struct PostService {
                 "imageUrl": imageUrl,
                 "ownerUid": uid,
                 "ownerImageUrl": user.profileImageUrl,
-                "ownerUsername": user.username
+                "ownerUsername": user.username + user.fullname
             ] as [String : Any]
             
             COLLECTION_POSTS.addDocument(data: data, completion: completion)
