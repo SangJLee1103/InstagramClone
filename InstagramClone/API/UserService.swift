@@ -111,27 +111,25 @@ struct UserService {
         }
     }
     
-    static func checkIfUserIsFollowedRx() -> Observable<Bool> {
+    static func checkIfUserIsFollowedRx(uid: String) -> Observable<Bool> {
         return .create { observer in
             guard let currentUid = Auth.auth().currentUser?.uid else {
                 observer.onCompleted()
                 return Disposables.create()
             }
             
-            COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(currentUid).getDocument { (snapshot, error) in
+            COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).getDocument { (snapshot, error) in
                 if let error = error {
-                    observer.onError(error) // 에러 발생 시 에러 방출
+                    observer.onError(error)
                 } else {
                     let isFollowed = snapshot?.exists ?? false
-                    observer.onNext(isFollowed) // 결과 방출
+                    observer.onNext(isFollowed)
                 }
-                observer.onCompleted() // 작업 완료 시 완료 방출
+                observer.onCompleted()
             }
             return Disposables.create()
         }
     }
-    
-    
     
     // 유저의 팔로우, 팔로잉, 포스팅 정보 가져오기
     static func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {

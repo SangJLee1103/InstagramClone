@@ -16,14 +16,12 @@ final class NotificationReactor: Reactor {
         case follow(String)
         case unfollow(String)
         case fetchPostWithId(String)
-        case refresh
     }
     
     enum Mutation {
         case setNotifications([Notification])
         case setFollowed(Bool, index: Int)
         case showPost(Post)
-        case refresh([Notification])
         case setLoading(Bool)
         case setError(String?)
     }
@@ -42,8 +40,25 @@ final class NotificationReactor: Reactor {
         case .fetchNotifications:
             return Observable.concat([
                 Observable.just(Mutation.setLoading(true)),
-                Observable.just(Mutation.setLoading(false)),
-                fetchNotifications().map { Mutation.setNotifications($0) }
+                fetchNotifications()
+                    .flatMap { notifications -> Observable<Mutation> in
+                        let followStatusObservables = notifications.map { notification in
+                            self.checkIfUserIsFollowed(uid: notification.uid)
+                                .map { isFollowed -> (Notification, Bool) in
+                                    return (notification, isFollowed)
+                                }
+                        }
+                        return Observable.zip(followStatusObservables)
+                            .map { followStatusArray in
+                                let updatedNotifications = followStatusArray.map { (notification, isFollowed) -> Notification in
+                                    var updatedNotification = notification
+                                    updatedNotification.userIsFollwed = isFollowed
+                                    return updatedNotification
+                                }
+                                return Mutation.setNotifications(updatedNotifications)
+                            }
+                    },
+                Observable.just(Mutation.setLoading(false))
             ])
         case .checkIfUserIsFollowed(let uid):
             return Observable.from(currentState.notifications.enumerated())
@@ -51,7 +66,7 @@ final class NotificationReactor: Reactor {
                     notification.type == .follow && notification.uid == uid
                 }
                 .flatMap { index, notification in
-                    self.checkIfUserIsFollowed()
+                    self.checkIfUserIsFollowed(uid: notification.uid)
                         .map { isFollowed in
                             return Mutation.setFollowed(isFollowed, index: index)
                         }
@@ -90,12 +105,6 @@ final class NotificationReactor: Reactor {
                 .catch { error in
                     return .just(Mutation.setError(error.localizedDescription))
                 }
-        case .refresh:
-            return Observable.concat([
-                Observable.just(Mutation.setLoading(true)),
-                Observable.just(Mutation.setLoading(false)),
-                fetchNotifications().map { Mutation.refresh($0) },
-            ])
         }
     }
     
@@ -108,8 +117,6 @@ final class NotificationReactor: Reactor {
             newState.notifications[index].userIsFollwed = isFollowed
         case .showPost(let post):
             newState.selectedPost = post
-        case .refresh(let notifications):
-            newState.notifications = notifications
         case .setLoading(let isLoading):
             newState.isLoading = isLoading
         case .setError(let errorMessage):
@@ -122,8 +129,8 @@ final class NotificationReactor: Reactor {
         return NotificationService.fetchNotification()
     }
     
-    private func checkIfUserIsFollowed() -> Observable<Bool> {
-        return UserService.checkIfUserIsFollowedRx()
+    private func checkIfUserIsFollowed(uid: String) -> Observable<Bool> {
+        return UserService.checkIfUserIsFollowedRx(uid: uid)
     }
     
     private func follow(uid: String) -> Observable<Void> {

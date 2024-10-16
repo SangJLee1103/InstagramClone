@@ -139,44 +139,8 @@ final class NotificationCell: UITableViewCell {
             .disposed(by: disposeBag)
     }
     
-    
-//    @objc func handleFollowTapped() {
-//        guard let reactor = reactor else { return }
-//        let action: NotificationCellReactor.Action = reactor.currentState.isFollowed ? .followTapped : .followTapped
-//        reactor.action.onNext(action)
-//    }
-//    
     @objc func handlePostTapped() {
         guard let postId = reactor?.currentState.notification.postId else { return }
         delegate?.cell(self, wantsToViewPost: postId)
     }
-    
-    //    @objc func handleFollowTapped() {
-    //        guard let viewModel = viewModel else { return }
-    //        if viewModel.notification.userIsFollwed {
-    //            delegate?.cell(self, wantsToUnfollow: viewModel.notification.uid)
-    //        } else {
-    //            delegate?.cell(self, wantsToFollow: viewModel.notification.uid)
-    //        }
-    //    }
-    //
-    //    @objc func handlePostTapped() {
-    //        guard let postId = viewModel?.notification.postId else { return }
-    //        delegate?.cell(self, wantsToViewPost: postId)
-    //    }
-    //
-    //    func configure() {
-    //        guard let viewModel = viewModel else { return }
-    //        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
-    //        postImageView.sd_setImage(with: viewModel.postImageUrl)
-    //        infoLabel.attributedText = viewModel.notificationMessage
-    //
-    //        followButton.isHidden = !viewModel.shouldHidePostImage
-    //        postImageView.isHidden = viewModel.shouldHidePostImage
-    //
-    //        followButton.setTitle(viewModel.followButtonText, for: .normal)
-    //        followButton.backgroundColor = viewModel.followButtonBackgroundColor
-    //        followButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
-    //    }
-    
 }

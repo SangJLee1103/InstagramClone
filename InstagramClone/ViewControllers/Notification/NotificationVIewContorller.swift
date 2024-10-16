@@ -25,22 +25,9 @@ final class NotificationViewContorller: UITableViewController {
         bind(reactor: reactor)
     }
     
-    //
-    //    func checkIfUserIsFollowed() {
-    //        notifications.forEach { notification in
-    //            guard notification.type == .follow else { return }
-    //
-    //            UserService.checkIfUserIsFollowed(uid: notification.uid) { isFollowed in
-    //                if let index = self.notifications.firstIndex(where: { $0.id == notification.id }) {
-    //                    self.notifications[index].userIsFollwed = isFollowed
-    //                }
-    //            }
-    //        }
-    //    }
-    
     // MARK: - 액션
     @objc func handleRefreesh() {
-        reactor.action.onNext(.refresh)
+        reactor.action.onNext(.fetchNotifications)
     }
     
     private func configureTableView() {
@@ -108,19 +95,10 @@ final class NotificationViewContorller: UITableViewController {
 extension NotificationViewContorller: NotificationCellDelegate {
     func cell(_ cell: NotificationCell, wantsToFollow uid: String) {
         reactor.action.onNext(.follow(uid))
-        
-        //        UserService.follow(uid: uid) { _ in
-        //            self.showLoader(false)
-        //            cell.viewModel?.notification.userIsFollwed.toggle()
-        //        }
     }
     
     func cell(_ cell: NotificationCell, wantsToUnfollow uid: String) {
         reactor.action.onNext(.unfollow(uid))
-        //        UserService.unfollow(uid: uid) { _ in
-        //            self.showLoader(false)
-        //            cell.viewModel?.notification.userIsFollwed.toggle()
-        //        }
     }
     
     func cell(_ cell: NotificationCell, wantsToViewPost postId: String) {
