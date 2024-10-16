@@ -46,24 +46,23 @@ final class NotificationCell: UITableViewCell {
         let iv = UIImageView()
         iv.contentMode = .scaleAspectFill
         iv.clipsToBounds = true
+        iv.layer.cornerRadius = 7
         iv.backgroundColor = .lightGray
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(handlePostTapped))
         iv.isUserInteractionEnabled = true
         iv.addGestureRecognizer(tap)
-        
         return iv
     }()
     
     private lazy var followButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Loading", for: .normal)
-        button.layer.cornerRadius = 3
+        button.layer.cornerRadius = 7
         button.layer.borderColor = UIColor.lightGray.cgColor
         button.layer.borderWidth = 0.5
         button.titleLabel?.font = .boldSystemFont(ofSize: 14)
         button.setTitleColor(.black, for: .normal)
-//        button.addTarget(self, action: #selector(handleFollowTapped), for: .touchUpInside)
         return button
     }()
     
@@ -122,7 +121,7 @@ final class NotificationCell: UITableViewCell {
         reactor.state.map { $0.notification.userIsFollwed }
             .withUnretained(self)
             .subscribe(onNext: { owner, isFollowed in
-                owner.followButton.setTitle(isFollowed ? "Following" : "Followed", for: .normal)
+                owner.followButton.setTitle(isFollowed ? "팔로잉" : "팔로우", for: .normal)
                 owner.followButton.backgroundColor = isFollowed ? .lightGray : .systemBlue
                 owner.followButton.setTitleColor(isFollowed ? .black : .white, for: .normal)
             })
@@ -132,9 +131,9 @@ final class NotificationCell: UITableViewCell {
             .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 if self.reactor?.currentState.notification.userIsFollwed == true {
-                    delegate?.cell(self, wantsToFollow: reactor.currentState.notification.uid)
-                } else {
                     delegate?.cell(self, wantsToUnfollow: reactor.currentState.notification.uid)
+                } else {
+                    delegate?.cell(self, wantsToFollow: reactor.currentState.notification.uid)
                 }
             })
             .disposed(by: disposeBag)

@@ -116,7 +116,6 @@ extension NotificationViewContorller: NotificationCellDelegate {
     }
     
     func cell(_ cell: NotificationCell, wantsToUnfollow uid: String) {
-        showLoader(true)
         reactor.action.onNext(.unfollow(uid))
         //        UserService.unfollow(uid: uid) { _ in
         //            self.showLoader(false)
