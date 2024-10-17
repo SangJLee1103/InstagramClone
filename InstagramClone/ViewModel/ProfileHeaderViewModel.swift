@@ -11,7 +11,7 @@ struct ProfileHeaderViewModel {
     let user: User
     
     var fullname: String {
-        return user.fullname
+        return user.username + user.fullname
     }
     
     var profileImageUrl: URL? {

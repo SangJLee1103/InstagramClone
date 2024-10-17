@@ -21,7 +21,7 @@ enum NotificationType: Int {
     }
 }
 
-struct Notification {
+struct Notification: Equatable {
     let uid: String
     var postImageUrl: String?
     var postId: String?
