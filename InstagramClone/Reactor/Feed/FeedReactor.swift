@@ -10,7 +10,6 @@ import RxSwift
 import ReactorKit
 
 final class FeedReactor: Reactor {
-    
     enum Action {
         case fetchPosts
         case refresh

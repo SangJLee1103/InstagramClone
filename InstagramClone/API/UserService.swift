@@ -30,15 +30,7 @@ struct UserService {
         }
     }
     
-    // 팔로우
-    static func follow(uid: String, completion: @escaping(FirestoreCompletion)) {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).setData([:]) { error in
-            COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).setData([:], completion: completion)
-        }
-    }
-    
-    static func followRx(uid: String) -> Observable<Void> {
+    static func follow(uid: String) -> Observable<Void> {
         return .create { observer in
             guard let currentUid = Auth.auth().currentUser?.uid else {
                 observer.onCompleted()
@@ -65,16 +57,7 @@ struct UserService {
         
     }
     
-    // 언팔로우
-    static func unfollow(uid: String, completion: @escaping(FirestoreCompletion)) {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        
-        COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).delete { error in
-            COLLECTION_FOLLOWERS.document(uid).collection("user-followers").document(currentUid).delete(completion: completion)
-        }
-    }
-    
-    static func unfollowRx(uid: String) -> Observable<Void> {
+    static func unfollow(uid: String) -> Observable<Void> {
         return .create { observer in
             guard let currentUid = Auth.auth().currentUser?.uid else {
                 observer.onCompleted()
@@ -102,16 +85,7 @@ struct UserService {
     }
     
     // 유저를 팔로우 했는지 안했는지 체크하는 함수
-    static func checkIfUserIsFollowed(uid: String, completion: @escaping(Bool) -> Void) {
-        guard let currentUid = Auth.auth().currentUser?.uid else { return }
-        
-        COLLECTION_FOLLOWING.document(currentUid).collection("user-following").document(uid).getDocument { (snapshot, error) in
-            guard let isFollowed = snapshot?.exists else { return }
-            completion(isFollowed)
-        }
-    }
-    
-    static func checkIfUserIsFollowedRx(uid: String) -> Observable<Bool> {
+    static func checkIfUserIsFollowed(uid: String) -> Observable<Bool> {
         return .create { observer in
             guard let currentUid = Auth.auth().currentUser?.uid else {
                 observer.onCompleted()
@@ -132,18 +106,24 @@ struct UserService {
     }
     
     // 유저의 팔로우, 팔로잉, 포스팅 정보 가져오기
-    static func fetchUserStats(uid: String, completion: @escaping(UserStats) -> Void) {
-        COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, error in
-            let followers = snapshot?.documents.count ?? 0
+    static func fetchUserStats(uid: String) -> Observable<UserStats> {
+        return .create { observer in
             
-            COLLECTION_FOLLOWING.document(uid).collection("user-following").getDocuments { snapshot, error in
-                let following = snapshot?.documents.count ?? 0
+            COLLECTION_FOLLOWERS.document(uid).collection("user-followers").getDocuments { snapshot, error in
+                let followers = snapshot?.documents.count ?? 0
                 
-                COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid).getDocuments { snapshot, error in
-                    let posts = snapshot?.documents.count ?? 0
-                    completion(UserStats(followers: followers, following: following, posts: posts))
+                COLLECTION_FOLLOWING.document(uid).collection("user-following").getDocuments { snapshot, error in
+                    let following = snapshot?.documents.count ?? 0
+                    
+                    COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid).getDocuments { snapshot, error in
+                        let posts = snapshot?.documents.count ?? 0
+                        observer.onNext(UserStats(followers: followers, following: following, posts: posts))
+                        observer.onCompleted()
+                    }
                 }
             }
+            
+            return Disposables.create()
         }
     }
 }
