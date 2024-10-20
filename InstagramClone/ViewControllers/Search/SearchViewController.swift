@@ -71,7 +71,7 @@ final class SearchViewController: UITableViewController {
         tableView.rx.modelSelected(User.self)
             .withUnretained(self)
             .subscribe(onNext: { owner, user in
-                let controller = ProfileViewController(user: user)
+                let controller = ProfileViewController(reactor: ProfileReactor(user: user))
                 owner.navigationController?.pushViewController(controller, animated: true)
             })
             .disposed(by: disposeBag)
