@@ -6,19 +6,25 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import RxDataSources
+import ReactorKit
 
 private let cellIdentifier = "ProfileCell"
 private let headerIdentifier = "ProfileHeader"
 
-
-class ProfileViewController: UICollectionViewController {
+final class ProfileViewController: UICollectionViewController {
     
-    private var user: User
-    private var posts = [Post]()
+    //    private var user: User
+    //    private var posts = [Post]()
+    
+    private let disposeBag = DisposeBag()
+    private let reactor: ProfileReactor
     
     // 의존성 주입
-    init(user: User) {
-        self.user = user
+    init(reactor: ProfileReactor) {
+        self.reactor = reactor
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
     }
     
@@ -29,72 +35,60 @@ class ProfileViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureCollectionView()
-        checkIfUserIsFollowed()
-        fetchUserStats()
-        fetchPosts()
+        bind()
     }
     
-    func checkIfUserIsFollowed() {
-        UserService.checkIfUserIsFollowed(uid: user.uid) { isFollowed in
-            self.user.isFollowed = isFollowed
-            self.collectionView.reloadData()
-        }
-    }
-    
-    func fetchUserStats() {
-        UserService.fetchUserStats(uid: user.uid) { stats in
-            self.user.stats = stats
-            self.collectionView.reloadData()
-        }
-    }
-    
-    func fetchPosts() {
-        PostService.fetchPosts(forUser: user.uid) { posts in
-            self.posts = posts
-            self.collectionView.reloadData()
-        }
-    }
-    
-    
-    func configureCollectionView() {
-        navigationItem.title = user.username
+    private func configureCollectionView() {
+        collectionView.dataSource = nil
+        
         collectionView.backgroundColor = .white
         collectionView.register(ProfileCell.self, forCellWithReuseIdentifier: cellIdentifier)
         collectionView.register(ProfileHeader.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: headerIdentifier)
     }
-}
-
-// MARK: 컬렉션뷰 데이터 소스
-extension ProfileViewController {
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
-    }
-}
-
-// MARK: 컬렉션뷰 델리게이트
-extension ProfileViewController {
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ProfileCell
-        cell.viewModel = PostViewModel(post: posts[indexPath.row])
-        return cell
-    }
     
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! ProfileHeader
-        header.delegate = self
-        header.viewModel = ProfileHeaderViewModel(user: user)
+    private func bind() {
+        /// Input
+        reactor.action.onNext(.checkIfUserIsFollowed)
+        reactor.action.onNext(.fetchPosts)
+        reactor.action.onNext(.fetchUserStats)
         
-        return header
-    }
-}
-
-// MARK: - UICollectionViewDelegate
-extension ProfileViewController {
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let controller = FeedViewController(reactor: FeedReactor(initialPost: posts[indexPath.row]), collectionViewLayout: UICollectionViewFlowLayout())
-        navigationController?.pushViewController(controller, animated: true)
+        
+        /// CollectionView DataSource
+        let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, Post>>(
+            configureCell: { (dataSource, collectionView, indexPath, post) -> UICollectionViewCell in
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ProfileCell
+                cell.viewModel = PostViewModel(post: post)
+                return cell
+            },
+            configureSupplementaryView: { [weak self] (dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
+                guard let self = self else { return UICollectionReusableView() }
+                let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! ProfileHeader
+                header.delegate = self
+                header.viewModel = ProfileHeaderViewModel(user: reactor.currentState.user)
+                return header
+            }
+        )
+        
+        /// Output
+        reactor.state.map { state -> [SectionModel<String, Post>] in
+            return [SectionModel(model: "Profile", items: state.posts)]
+        }
+        .bind(to: collectionView.rx.items(dataSource: dataSource))
+        .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.user.username }
+            .bind(to: navigationItem.rx.title)
+            .disposed(by: disposeBag)
+        
+        collectionView.rx.itemSelected
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let self = self else { return }
+                let controller = FeedViewController(reactor: FeedReactor(initialPost: reactor.currentState.posts[indexPath.row]), collectionViewLayout: UICollectionViewFlowLayout())
+                navigationController?.pushViewController(controller, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -120,23 +114,18 @@ extension ProfileViewController: UICollectionViewDelegateFlowLayout {
 
 extension ProfileViewController: ProfileHeaderDelegate {
     func header(_ profileHeader: ProfileHeader, didTapActionButtonFor user: User) {
-        guard let tab = tabBarController as? MainTabViewController else { return }
+        guard tabBarController is MainTabViewController else { return }
         guard let currentUser = UserManager.shared.currentUser else { return }
         
         if user.isCurrentUser {
             
         } else if user.isFollowed {
-            UserService.unfollow(uid: user.uid) { error in
-                self.user.isFollowed = false
-                self.collectionView.reloadData()
-            }
+            reactor.action.onNext(.unfollow)
+            self.collectionView.reloadData()
         } else {
-            UserService.follow(uid: user.uid) { error in
-                self.user.isFollowed = true
-                self.collectionView.reloadData()
-                
-                NotificationService.uploadNotification(toUid: user.uid, fromUser: currentUser, type: .follow)
-            }
+            reactor.action.onNext(.follow)
+            self.collectionView.reloadData()
+            NotificationService.uploadNotification(toUid: user.uid, fromUser: currentUser, type: .follow)
         }
     }
 }
