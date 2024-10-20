@@ -16,13 +16,9 @@ private let headerIdentifier = "ProfileHeader"
 
 final class ProfileViewController: UICollectionViewController {
     
-    //    private var user: User
-    //    private var posts = [Post]()
-    
     private let disposeBag = DisposeBag()
     private let reactor: ProfileReactor
     
-    // 의존성 주입
     init(reactor: ProfileReactor) {
         self.reactor = reactor
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
@@ -54,12 +50,11 @@ final class ProfileViewController: UICollectionViewController {
         reactor.action.onNext(.fetchPosts)
         reactor.action.onNext(.fetchUserStats)
         
-        
         /// CollectionView DataSource
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionModel<String, Post>>(
             configureCell: { (dataSource, collectionView, indexPath, post) -> UICollectionViewCell in
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as! ProfileCell
-                cell.viewModel = PostViewModel(post: post)
+                cell.bind(reactor: ProfileCellReactor(post: post))
                 return cell
             },
             configureSupplementaryView: { [weak self] (dataSource, collectionView, kind, indexPath) -> UICollectionReusableView in
@@ -72,15 +67,15 @@ final class ProfileViewController: UICollectionViewController {
         )
         
         /// Output
+        reactor.state.map { $0.user.username }
+            .bind(to: navigationItem.rx.title)
+            .disposed(by: disposeBag)
+        
         reactor.state.map { state -> [SectionModel<String, Post>] in
             return [SectionModel(model: "Profile", items: state.posts)]
         }
         .bind(to: collectionView.rx.items(dataSource: dataSource))
         .disposed(by: disposeBag)
-        
-        reactor.state.map { $0.user.username }
-            .bind(to: navigationItem.rx.title)
-            .disposed(by: disposeBag)
         
         collectionView.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in

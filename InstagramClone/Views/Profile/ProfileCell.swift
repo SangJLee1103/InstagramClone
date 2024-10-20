@@ -6,12 +6,11 @@
 //
 
 import UIKit
+import RxSwift
+import ReactorKit
 
-class ProfileCell: UICollectionViewCell {
-    
-    var viewModel: PostViewModel? {
-        didSet { configure() }
-    }
+final class ProfileCell: UICollectionViewCell {
+    private let disposeBag = DisposeBag()
     
     private let postImageView: UIImageView = {
         let iv = UIImageView()
@@ -23,20 +22,32 @@ class ProfileCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        backgroundColor = .lightGray
-        
-        addSubview(postImageView)
-        postImageView.fillSuperview()
+        configureUI()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configure() {
-        guard let viewModel = viewModel else { return }
-        postImageView.sd_setImage(with: viewModel.imageUrl)
+    private func configureUI() {
+        backgroundColor = .lightGray
+        
+        addSubview(postImageView)
+        postImageView.fillSuperview()
     }
     
+    func bind(reactor: ProfileCellReactor) {
+        reactor.state.map { $0.post.imageUrl }
+            .compactMap { URL(string: $0) }
+            .bind(to: postImageView.rx.setImageUrl)
+            .disposed(by: disposeBag)
+    }
+}
+
+extension Reactive where Base: UIImageView {
+    var setImageUrl: Binder<URL> {
+        return Binder(base) { imageView, url in
+            imageView.sd_setImage(with: url)
+        }
+    }
 }
