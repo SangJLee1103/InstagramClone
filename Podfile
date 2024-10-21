@@ -19,6 +19,7 @@ target 'InstagramClone' do
 	pod 'YPImagePicker'
 	pod 'RxSwift'
 	pod 'RxCocoa'
+	pod 'RxDataSources'
 	pod 'ReactorKit'
 end
 

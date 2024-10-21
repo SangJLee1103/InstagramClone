@@ -10,7 +10,6 @@ import RxSwift
 
 final class NotificationCellReactor: Reactor {
     typealias Action = NoAction
-    typealias Mutation = NoMutation
     
     struct State {
         let notification: Notification

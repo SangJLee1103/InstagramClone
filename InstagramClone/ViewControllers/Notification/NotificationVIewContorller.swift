@@ -84,7 +84,7 @@ final class NotificationViewContorller: UITableViewController {
                 
                 UserService.fetchUser(withUid: notification.uid) { user in
                     self?.showLoader(false)
-                    let controller = ProfileViewController(user: user)
+                    let controller = ProfileViewController(reactor: ProfileReactor(user: user))
                     self?.navigationController?.pushViewController(controller, animated: true)
                 }
             })

@@ -110,6 +110,7 @@ final class NotificationReactor: Reactor {
     
     func reduce(state: State, mutation: Mutation) -> State {
         var newState = state
+        
         switch mutation {
         case .setNotifications(let notifications):
             newState.notifications = notifications
@@ -130,14 +131,14 @@ final class NotificationReactor: Reactor {
     }
     
     private func checkIfUserIsFollowed(uid: String) -> Observable<Bool> {
-        return UserService.checkIfUserIsFollowedRx(uid: uid)
+        return UserService.checkIfUserIsFollowed(uid: uid)
     }
     
     private func follow(uid: String) -> Observable<Void> {
-        return UserService.followRx(uid: uid)
+        return UserService.follow(uid: uid)
     }
     
     private func unFollow(uid: String) -> Observable<Void> {
-        return UserService.unfollowRx(uid: uid)
+        return UserService.unfollow(uid: uid)
     }
 }

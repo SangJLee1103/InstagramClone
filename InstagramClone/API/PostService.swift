@@ -44,18 +44,22 @@ struct PostService {
         }
     }
     
-    static func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void) {
-        let query = COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid)
-        
-        query.getDocuments { snapshot, error in
-            guard let documents = snapshot?.documents else { return }
+    static func fetchPosts(forUser uid: String) -> Observable<[Post]> {
+        return .create { observer in
+            let query = COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid)
             
-            var posts = documents.map({ Post(postId: $0.documentID, dictionary: $0.data()) })
-            
-            posts.sort { (post1, post2) -> Bool in
-                return post1.timestamp.seconds > post2.timestamp.seconds
+            query.getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else { return }
+                
+                var posts = documents.map({ Post(postId: $0.documentID, dictionary: $0.data()) })
+                
+                posts.sort { (post1, post2) -> Bool in
+                    return post1.timestamp.seconds > post2.timestamp.seconds
+                }
+                observer.onNext(posts)
+                observer.onCompleted()
             }
-            completion(posts)
+            return Disposables.create()
         }
     }
     
