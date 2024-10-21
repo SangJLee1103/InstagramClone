@@ -20,6 +20,7 @@
 		DECDD3342CC3B3B900AFEF96 /* ProfileReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECDD3332CC3B3B900AFEF96 /* ProfileReactor.swift */; };
 		DECDD3362CC4F32B00AFEF96 /* ProfileHeaderViewReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECDD3352CC4F32B00AFEF96 /* ProfileHeaderViewReactor.swift */; };
 		DECDD3382CC4F33700AFEF96 /* ProfileCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECDD3372CC4F33700AFEF96 /* ProfileCellReactor.swift */; };
+		DECDD33A2CC71B9A00AFEF96 /* UserCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECDD3392CC71B9A00AFEF96 /* UserCellReactor.swift */; };
 		DED478942CAFF1EF002CAF64 /* NotificationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED478932CAFF1EF002CAF64 /* NotificationReactor.swift */; };
 		DED478992CB523C1002CAF64 /* NotificationCellReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED478982CB523C1002CAF64 /* NotificationCellReactor.swift */; };
 		DED4BC692C944E7400025C18 /* RegistrationReactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED4BC682C944E7400025C18 /* RegistrationReactor.swift */; };
@@ -57,7 +58,6 @@
 		F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD4291FBEB2000C1C97 /* Constants.swift */; };
 		F4D05CD7291FC10A000C1C97 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CD6291FC10A000C1C97 /* User.swift */; };
 		F4D05CDB2920E098000C1C97 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CDA2920E098000C1C97 /* UserCell.swift */; };
-		F4D05CDD2920F268000C1C97 /* UserCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */; };
 		F4E9F2332924DCBF00322206 /* PostService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E9F2322924DCBF00322206 /* PostService.swift */; };
 		F4E9F2352924EE5900322206 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4E9F2342924EE5900322206 /* Post.swift */; };
 /* End PBXBuildFile section */
@@ -78,6 +78,7 @@
 		DECDD3332CC3B3B900AFEF96 /* ProfileReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileReactor.swift; sourceTree = "<group>"; };
 		DECDD3352CC4F32B00AFEF96 /* ProfileHeaderViewReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderViewReactor.swift; sourceTree = "<group>"; };
 		DECDD3372CC4F33700AFEF96 /* ProfileCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellReactor.swift; sourceTree = "<group>"; };
+		DECDD3392CC71B9A00AFEF96 /* UserCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellReactor.swift; sourceTree = "<group>"; };
 		DED478932CAFF1EF002CAF64 /* NotificationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationReactor.swift; sourceTree = "<group>"; };
 		DED478982CB523C1002CAF64 /* NotificationCellReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCellReactor.swift; sourceTree = "<group>"; };
 		DED4BC682C944E7400025C18 /* RegistrationReactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationReactor.swift; sourceTree = "<group>"; };
@@ -117,7 +118,6 @@
 		F4D05CD4291FBEB2000C1C97 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		F4D05CD6291FC10A000C1C97 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		F4D05CDA2920E098000C1C97 /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
-		F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCellViewModel.swift; sourceTree = "<group>"; };
 		F4E9F2322924DCBF00322206 /* PostService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostService.swift; sourceTree = "<group>"; };
 		F4E9F2342924EE5900322206 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -146,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				089DDFE92CA2B4B400576308 /* SearchReactor.swift */,
+				DECDD3392CC71B9A00AFEF96 /* UserCellReactor.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -202,6 +203,33 @@
 				DECDD3372CC4F33700AFEF96 /* ProfileCellReactor.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		DECDD33B2CC71CAE00AFEF96 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		DECDD33C2CC71CBF00AFEF96 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				F4D05CDA2920E098000C1C97 /* UserCell.swift */,
+				F405C5262929DEE500100735 /* NotificationCell.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		DECDD33D2CC71CE500AFEF96 /* Feed */ = {
+			isa = PBXGroup;
+			children = (
+				F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */,
+				F460225B29266EC5000DE2D5 /* CommentCell.swift */,
+				F460225D292727CE000DE2D5 /* CommentInputAccesoryView.swift */,
+			);
+			path = Feed;
 			sourceTree = "<group>";
 		};
 		DED478922CAFF1D7002CAF64 /* Notification */ = {
@@ -267,7 +295,6 @@
 				F4B6DE8F291D005200A8FEA9 /* Views */,
 				F4B6DE8A291D003E00A8FEA9 /* ViewControllers */,
 				DED4BC662C944E5600025C18 /* Reactor */,
-				F4B6DE8E291D005000A8FEA9 /* ViewModel */,
 				F4B6DE89291D003B00A8FEA9 /* API */,
 				F4B6DE88291D002900A8FEA9 /* Utils */,
 				F4B6DE74291CFFFD00A8FEA9 /* AppDelegate.swift */,
@@ -322,24 +349,13 @@
 			path = ViewControllers;
 			sourceTree = "<group>";
 		};
-		F4B6DE8E291D005000A8FEA9 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				F4D05CDC2920F268000C1C97 /* UserCellViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
 		F4B6DE8F291D005200A8FEA9 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				DECDD33B2CC71CAE00AFEF96 /* Common */,
+				DECDD33D2CC71CE500AFEF96 /* Feed */,
+				DECDD33C2CC71CBF00AFEF96 /* Notification */,
 				F4D05CCF291F669F000C1C97 /* Profile */,
-				F4B6DE9F291D14DB00A8FEA9 /* FeedCell.swift */,
-				F4D05CC3291DFCA3000C1C97 /* CustomTextField.swift */,
-				F4D05CDA2920E098000C1C97 /* UserCell.swift */,
-				F460225B29266EC5000DE2D5 /* CommentCell.swift */,
-				F460225D292727CE000DE2D5 /* CommentInputAccesoryView.swift */,
-				F405C5262929DEE500100735 /* NotificationCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -511,10 +527,10 @@
 				DECDD3362CC4F32B00AFEF96 /* ProfileHeaderViewReactor.swift in Sources */,
 				DEB0F8D22C9E9C95008C913A /* CommentReactor.swift in Sources */,
 				F479D99429244B5C0059BA8B /* InputTextView.swift in Sources */,
+				DECDD33A2CC71B9A00AFEF96 /* UserCellReactor.swift in Sources */,
 				DED478992CB523C1002CAF64 /* NotificationCellReactor.swift in Sources */,
 				F4D05CD5291FBEB2000C1C97 /* Constants.swift in Sources */,
 				F4B6DE98291D053000A8FEA9 /* ImageSelectorViewController.swift in Sources */,
-				F4D05CDD2920F268000C1C97 /* UserCellViewModel.swift in Sources */,
 				F4B6DE9C291D054800A8FEA9 /* ProfileViewController.swift in Sources */,
 				F4B6DE92291D02CC00A8FEA9 /* MainTabViewController.swift in Sources */,
 				F460225A29266D5D000DE2D5 /* CommentViewController.swift in Sources */,

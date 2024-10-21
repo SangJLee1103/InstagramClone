@@ -7,7 +7,7 @@
 
 import UIKit
 
-class InputTextView: UITextView {
+final class InputTextView: UITextView {
     
     var placeholderText: String? {
         didSet { placeholderLabel.text = placeholderText }

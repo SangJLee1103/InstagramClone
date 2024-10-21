@@ -150,7 +150,6 @@ final class ProfileHeader: UICollectionReusableView {
     }
     
     private func bind(reactor: ProfileHeaderViewReactor) {
-        
         reactor.state.map { $0.user.fullname }
             .bind(to: nameLabel.rx.text)
             .disposed(by: disposeBag)

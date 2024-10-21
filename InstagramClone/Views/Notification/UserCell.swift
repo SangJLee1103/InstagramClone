@@ -6,8 +6,10 @@
 //
 
 import UIKit
+import RxSwift
+import ReactorKit
 
-class UserCell: UITableViewCell {
+final class UserCell: UITableViewCell {
     
     var viewModel: UserCellViewModel? {
         didSet {
