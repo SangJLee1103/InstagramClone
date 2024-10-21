@@ -43,11 +43,3 @@ final class ProfileCell: UICollectionViewCell {
             .disposed(by: disposeBag)
     }
 }
-
-extension Reactive where Base: UIImageView {
-    var setImageUrl: Binder<URL> {
-        return Binder(base) { imageView, url in
-            imageView.sd_setImage(with: url)
-        }
-    }
-}
