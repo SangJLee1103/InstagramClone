@@ -61,7 +61,7 @@ final class ProfileViewController: UICollectionViewController {
                 guard let self = self else { return UICollectionReusableView() }
                 let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerIdentifier, for: indexPath) as! ProfileHeader
                 header.delegate = self
-                header.viewModel = ProfileHeaderViewModel(user: reactor.currentState.user)
+                header.reactor = ProfileHeaderViewReactor(user: reactor.currentState.user)
                 return header
             }
         )

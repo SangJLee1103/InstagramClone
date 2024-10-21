@@ -6,3 +6,19 @@
 //
 
 import Foundation
+import RxSwift
+import ReactorKit
+
+final class ProfileHeaderViewReactor: Reactor {
+    typealias Action = NoAction
+    
+    struct State {
+        let user: User
+    }
+    
+    let initialState: State
+    
+    init(user: User) {
+        self.initialState = State(user: user)
+    }
+}
