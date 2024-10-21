@@ -40,10 +40,8 @@ struct NotificationService {
             
             docRef.setData(data) { error in
                 if let error = error {
-                    print("noti 에러: \(error)")
                     observer.onNext(.failure(.from(error)))
                 } else {
-                    print("noti 성공")
                     observer.onNext(.success(()))
                 }
                 observer.onCompleted()
@@ -82,6 +80,23 @@ struct NotificationService {
             guard let documents = snapshot?.documents else { return }
             let notifications = documents.map({ Notification(dictionary: $0.data()) })
             completion(notifications)
+        }
+    }
+    
+    static func fetchNotification() -> Observable<[Notification]> {
+        return .create { observer in
+            guard let uid = Auth.auth().currentUser?.uid else {
+                observer.onCompleted()
+                return Disposables.create()
+            }
+            
+            COLLECTION_NOTIFICATIONS.document(uid).collection("user-notifications").getDocuments { snapshot, _ in
+                    guard let documents = snapshot?.documents else { return }
+                    let notifications = documents.map({ Notification(dictionary: $0.data()) })
+                    observer.onNext(notifications)
+                    observer.onCompleted()
+            }
+            return Disposables.create()
         }
     }
 }

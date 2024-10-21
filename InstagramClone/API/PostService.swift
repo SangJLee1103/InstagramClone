@@ -23,7 +23,7 @@ struct PostService {
                 "imageUrl": imageUrl,
                 "ownerUid": uid,
                 "ownerImageUrl": user.profileImageUrl,
-                "ownerUsername": user.username
+                "ownerUsername": user.username + user.fullname
             ] as [String : Any]
             
             COLLECTION_POSTS.addDocument(data: data, completion: completion)
@@ -44,27 +44,46 @@ struct PostService {
         }
     }
     
-    static func fetchPosts(forUser uid: String, completion: @escaping([Post]) -> Void) {
-        let query = COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid)
-        
-        query.getDocuments { snapshot, error in
-            guard let documents = snapshot?.documents else { return }
+    static func fetchPosts(forUser uid: String) -> Observable<[Post]> {
+        return .create { observer in
+            let query = COLLECTION_POSTS.whereField("ownerUid", isEqualTo: uid)
             
-            var posts = documents.map({ Post(postId: $0.documentID, dictionary: $0.data()) })
-            
-            posts.sort { (post1, post2) -> Bool in
-                return post1.timestamp.seconds > post2.timestamp.seconds
+            query.getDocuments { snapshot, error in
+                guard let documents = snapshot?.documents else { return }
+                
+                var posts = documents.map({ Post(postId: $0.documentID, dictionary: $0.data()) })
+                
+                posts.sort { (post1, post2) -> Bool in
+                    return post1.timestamp.seconds > post2.timestamp.seconds
+                }
+                observer.onNext(posts)
+                observer.onCompleted()
             }
-            completion(posts)
+            return Disposables.create()
         }
     }
     
-    static func fetchPost(withPostId postId: String, completion: @escaping(Post) -> Void) {
-        COLLECTION_POSTS.document(postId).getDocument { snapshot, _ in
-            guard let snapshot = snapshot else { return }
-            guard let data = snapshot.data() else { return }
-            let post = Post(postId: snapshot.documentID, dictionary: data)
-            completion(post)
+    static func fetchPost(withPostId postId: String) -> Observable<Post> {
+        return Observable.create { observer in
+            let document = COLLECTION_POSTS.document(postId)
+            
+            document.getDocument { snapshot, error in
+                if let error = error {
+                    observer.onError(error)
+                    return
+                }
+                
+                guard let snapshot = snapshot, let data = snapshot.data() else {
+                    observer.onError(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Data not found."]))
+                    return
+                }
+                
+                let post = Post(postId: snapshot.documentID, dictionary: data)
+                observer.onNext(post)
+                observer.onCompleted()
+            }
+            
+            return Disposables.create()
         }
     }
     

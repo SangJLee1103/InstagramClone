@@ -10,7 +10,6 @@ import RxSwift
 import ReactorKit
 
 final class FeedCellReactor: Reactor {
-    
     enum Action {
         case likeButtonTapped
     }

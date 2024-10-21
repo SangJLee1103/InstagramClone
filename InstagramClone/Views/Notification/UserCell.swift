@@ -6,14 +6,12 @@
 //
 
 import UIKit
+import RxSwift
+import ReactorKit
 
-class UserCell: UITableViewCell {
+final class UserCell: UITableViewCell {
     
-    var viewModel: UserCellViewModel? {
-        didSet {
-            configure()
-        }
-    }
+    private let disposeBag = DisposeBag()
     
     private let profileImageView: UIImageView = {
         let iv = UIImageView()
@@ -61,12 +59,18 @@ class UserCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-    func configure() {
-        guard let viewModel = viewModel else { return }
+    func bind(reactor: UserCellReactor) {
+        reactor.state.map { URL(string: $0.user.profileImageUrl )}
+            .compactMap { $0 }
+            .bind(to: profileImageView.rx.setImageUrl)
+            .disposed(by: disposeBag)
         
-        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
-        usernameLabel.text = viewModel.username
-        fullnameLabel.text = viewModel.fullname
+        reactor.state.map { $0.user.username }
+            .bind(to: usernameLabel.rx.text)
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.user.fullname }
+            .bind(to: fullnameLabel.rx.text)
+            .disposed(by: disposeBag)
     }
 }

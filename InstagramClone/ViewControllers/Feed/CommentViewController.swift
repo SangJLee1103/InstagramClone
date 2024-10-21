@@ -122,7 +122,7 @@ extension CommentViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let uid = reactor.currentState.comments[indexPath.row].uid
         UserService.fetchUser(withUid: uid) { user in
-            let controller = ProfileViewController(user: user)
+            let controller = ProfileViewController(reactor: ProfileReactor(user: user))
             self.navigationController?.pushViewController(controller, animated: true)
         }
     }

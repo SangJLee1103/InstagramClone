@@ -8,6 +8,7 @@
 
 import UIKit
 import JGProgressHUD
+import RxSwift
 
 extension UIViewController {
     static let hud = JGProgressHUD(style: .dark)
@@ -40,6 +41,22 @@ extension UIButton {
         attributedTitle.append(NSAttributedString(string: "\(secondPart)", attributes: boldAtts))
         
         setAttributedTitle(attributedTitle, for: .normal)
+    }
+}
+
+extension UILabel {
+    func attributedStatText(value: Int, label: String) -> NSAttributedString {
+        let attributedText = NSMutableAttributedString(string: "\(value)\n", attributes: [.font: UIFont.boldSystemFont(ofSize: 14)])
+        attributedText.append(NSAttributedString(string: label, attributes: [.font: UIFont.systemFont(ofSize: 14), .foregroundColor: UIColor.lightGray]))
+        return attributedText
+    }
+}
+
+extension Reactive where Base: UIImageView {
+    var setImageUrl: Binder<URL> {
+        return Binder(base) { imageView, url in
+            imageView.sd_setImage(with: url)
+        }
     }
 }
 
@@ -131,7 +148,6 @@ extension UIView {
                bottom: view.bottomAnchor, right: view.rightAnchor)
     }
 }
-
 
 //extension UIViewController {
 //    static let hud = JGProgressHUD(style: .dark)

@@ -7,18 +7,25 @@
 
 import UIKit
 import SDWebImage
+import RxSwift
+import ReactorKit
 
 protocol ProfileHeaderDelegate: class {
     func header(_ profileHeader: ProfileHeader, didTapActionButtonFor user: User)
 }
 
-class ProfileHeader: UICollectionReusableView {
-    
-    var viewModel: ProfileHeaderViewModel? {
-        didSet { configure() }
-    }
+final class ProfileHeader: UICollectionReusableView {
     
     weak var delegate: ProfileHeaderDelegate?
+    
+    var reactor: ProfileHeaderViewReactor? {
+        didSet {
+            guard let reactor = reactor else { return }
+            bind(reactor: reactor)
+        }
+    }
+    
+    private let disposeBag = DisposeBag()
     
     // MARK: - Properties
     private let profileImageView: UIImageView = {
@@ -88,12 +95,17 @@ class ProfileHeader: UICollectionReusableView {
         return button
     }()
     
-    
-    // MARK: = Lifecycle
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        configureUI()
         
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureUI() {
         backgroundColor = .white
         addSubview(profileImageView)
         profileImageView.anchor(top: topAnchor, left: leftAnchor, paddingTop: 16, paddingLeft: 12)
@@ -132,28 +144,61 @@ class ProfileHeader: UICollectionReusableView {
         bottomDivider.anchor(top: buttonStack.bottomAnchor, left: leftAnchor, right: rightAnchor, height: 0.5)
     }
     
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - 액션
     @objc func handleEditProfileFollowTapped() {
-        guard let viewModel = viewModel else { return }
-        delegate?.header(self, didTapActionButtonFor: viewModel.user)
+        guard let reactor = reactor else { return }
+        delegate?.header(self, didTapActionButtonFor: reactor.currentState.user)
     }
     
-    func configure() {
-        guard let viewModel = viewModel else { return }
+    private func bind(reactor: ProfileHeaderViewReactor) {
+        reactor.state.map { $0.user.fullname }
+            .bind(to: nameLabel.rx.text)
+            .disposed(by: disposeBag)
         
-        nameLabel.text = viewModel.fullname
-        profileImageView.sd_setImage(with: viewModel.profileImageUrl)
+        reactor.state.map { URL(string: $0.user.profileImageUrl) }
+            .compactMap { $0 }
+            .bind(to: profileImageView.rx.setImageUrl)
+            .disposed(by: disposeBag)
         
-        editProfileFollowButton.setTitle(viewModel.followedButtonText, for: .normal)
-        editProfileFollowButton.setTitleColor(viewModel.followButtonTextColor, for: .normal)
-        editProfileFollowButton.backgroundColor = viewModel.followButtonBackgroundColor
+        reactor.state.map { reactor in
+                if reactor.user.isCurrentUser {
+                    return "프로필 편집"
+                } else {
+                    return reactor.user.isFollowed ? "팔로잉" : "팔로우"
+                }
+            }
+            .bind(to: editProfileFollowButton.rx.title(for: .normal))
+            .disposed(by: disposeBag)
         
-        postsLabel.attributedText = viewModel.numberOfPosts
-        followersLabel.attributedText = viewModel.numberOfFollowers
-        followingsLabel.attributedText = viewModel.numberOfFollowing
+        reactor.state.map { $0.user.isCurrentUser ? UIColor.white : ($0.user.isFollowed ? UIColor.systemGray : UIColor.systemBlue) }
+            .bind(to: editProfileFollowButton.rx.backgroundColor)
+            .disposed(by: disposeBag)
+        
+        // 팔로우/팔로잉 버튼 텍스트 색상 바인딩
+        reactor.state.map { $0.user.isCurrentUser ? UIColor.black : UIColor.white }
+            .subscribe(onNext: { [weak self] color in
+                self?.editProfileFollowButton.setTitleColor(color, for: .normal)
+            })
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.user.stats.posts }
+            .map { [weak self] in
+                self?.postsLabel.attributedStatText(value: $0, label: "게시물")
+            }
+            .bind(to: postsLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+
+        reactor.state.map { $0.user.stats.followers }
+            .map { [weak self] in
+                self?.followersLabel.attributedStatText(value: $0, label: "팔로워")
+            }
+            .bind(to: followersLabel.rx.attributedText)
+            .disposed(by: disposeBag)
+
+        reactor.state.map { $0.user.stats.following }
+            .map { [weak self] in
+                self?.followingsLabel.attributedStatText(value: $0, label: "팔로잉")
+            }
+            .bind(to: followingsLabel.rx.attributedText)
+            .disposed(by: disposeBag)
     }
 }

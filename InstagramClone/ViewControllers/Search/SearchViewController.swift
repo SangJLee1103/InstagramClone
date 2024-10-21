@@ -71,7 +71,7 @@ final class SearchViewController: UITableViewController {
         tableView.rx.modelSelected(User.self)
             .withUnretained(self)
             .subscribe(onNext: { owner, user in
-                let controller = ProfileViewController(user: user)
+                let controller = ProfileViewController(reactor: ProfileReactor(user: user))
                 owner.navigationController?.pushViewController(controller, animated: true)
             })
             .disposed(by: disposeBag)
@@ -79,7 +79,7 @@ final class SearchViewController: UITableViewController {
         /// Output
         reactor.state.map { $0.isSearchMode ? $0.filteredUsers : $0.users}
             .bind(to: tableView.rx.items(cellIdentifier: reuseIdentifier, cellType: UserCell.self)) { index, user, cell in
-                cell.viewModel = UserCellViewModel(user: user)
+                cell.bind(reactor: UserCellReactor(user: user))
             }
             .disposed(by: disposeBag)
     }
